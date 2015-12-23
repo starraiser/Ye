@@ -19,7 +19,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db){
         db.execSQL("CREATE TABLE IF NOT EXISTS " +
                 "Record (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "title TEXT, content TEXT, img BLOB);");
+                "title TEXT, content TEXT, imgpath TEXT);");
     }
 
     @Override

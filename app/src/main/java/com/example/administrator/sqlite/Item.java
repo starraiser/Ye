@@ -4,9 +4,12 @@ package com.example.administrator.sqlite;
  * Created by Administrator on 2015/12/23.
  */
 public class Item {
+    private int id;
     private String Title;
     private String Content;
-    private byte[] Photo;
+    private String Path;
+
+    public int getId(){ return id; }
 
     public String getTitle(){
         return Title;
@@ -24,11 +27,11 @@ public class Item {
         Content = content;
     }
 
-    public byte[] getPhoto(){
-        return Photo;
+    public String getPhotoPath(){
+        return Path;
     }
 
-    public void setPhoto(byte[] photo){
-        Photo = photo;
+    public void setPhotoPath(String photo){
+        Path = photo;
     }
 }
