@@ -26,6 +26,8 @@ public class MainActivity extends Activity {
         //initDataBase();
 
         setContentView(R.layout.activity_main);
+        listView = (ListView)findViewById(R.id.list);
+
         Button newItem = (Button)findViewById(R.id.newItem);
         newItem.setOnClickListener(new View.OnClickListener() {
             @Override
