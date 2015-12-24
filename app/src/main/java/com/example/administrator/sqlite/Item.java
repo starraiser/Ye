@@ -25,11 +25,20 @@ public class Item {
         Path = path;
     }
 
+    public Item(String time,String title,String content,String path){
+        Time = time;
+        Title = title;
+        Content = content;
+        Path = path;
+    }
+
     public void setId (int id) { _id=id; }
 
     public int getId () { return _id; }
 
     public String getDate(){ return Time; }
+
+    public void setDate(String time){ Time = time; }
 
     public String getTitle(){
         return Title;

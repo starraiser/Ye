@@ -23,34 +23,50 @@ public class DBManager {
     }
 
     public void addwithPic(Item item){
-        db.execSQL("insert int Record values(null,?,?,?)",
-                new Object[]{item.getTitle(),item.getContent(),item.getPhotoPath()});
+        db.execSQL("insert into Record values(null,?,?,?,?)",
+                new Object[]{item.getDate(),item.getTitle(),item.getContent(),item.getPhotoPath()});
     }
 
     public void addwithoutPic(Item item){
-        db.execSQL("insert int Record values(null,?,?,null)",
-                new Object[]{item.getTitle(),item.getContent()});
+        db.execSQL("insert into Record values(null,?,?,?,null)",
+                new Object[]{item.getDate(),item.getTitle(),item.getContent()});
     }
 
     public void update(Item item){
-        db.execSQL("update Record set title=?,content=?,imgpath=? where _id=?",
-                new Object[]{item.getTitle(),item.getContent(),item.getPhotoPath(),item.getId()});
+        db.execSQL("update Record set time=?,title=?,content=?,imgpath=? where _id=?",
+                new Object[]{item.getDate(),item.getTitle(),item.getContent(),item.getPhotoPath(),item.getId()});
     }
 
     public void delete(int id){
         db.execSQL("delete from Record where _id=?",new Object[]{id});
     }
 
+    public Item query(int id) {
+        Item item = new Item();
+        ContentValues cv = new ContentValues();
+        Cursor cursor = db.rawQuery("select * from Record where _id=?",new String[]{Integer.toString(id)});
+        while(cursor.moveToNext()){
+            int _id = cursor.getInt(cursor.getColumnIndex("_id"));
+            String time = cursor.getString(cursor.getColumnIndex("date"));
+            String title = cursor.getString(cursor.getColumnIndex("title"));
+            String content = cursor.getString(cursor.getColumnIndex("content"));
+            String path = cursor.getString(cursor.getColumnIndex("imgpath"));
+
+            item = new Item(_id, time, title, content, path);
+
+        }
+        return item;
+    }
     public List<Item> getList(){
         list = new ArrayList<Item>();
         ContentValues cv = new ContentValues();
         Cursor cursor = db.rawQuery("select * from Record", null);
         while(cursor.moveToNext()){
             int _id = cursor.getInt(cursor.getColumnIndex("_id"));
-            String time = cursor.getString(cursor.getColumnIndex("time"));
+            String time = cursor.getString(cursor.getColumnIndex("date"));
             String title = cursor.getString(cursor.getColumnIndex("title"));
             String content = cursor.getString(cursor.getColumnIndex("content"));
-            String path = cursor.getString(cursor.getColumnIndex("path"));
+            String path = cursor.getString(cursor.getColumnIndex("imgpath"));
 
             Item item = new Item(_id, time, title, content, path);
 

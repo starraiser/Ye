@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class DBOpenHelper extends SQLiteOpenHelper {
 
-    private static String DB_NAME="test.db";
+    private static String DB_NAME="test3.db";
     private static int DB_VERSION=1;
 
     public DBOpenHelper(Context context){
@@ -17,9 +17,9 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     }
     @Override
     public void onCreate(SQLiteDatabase db){
+        //db.execSQL("DROP TABLE Record");
         db.execSQL("CREATE TABLE IF NOT EXISTS " +
-                "Record (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "title TEXT, content TEXT, imgpath TEXT);");
+                "Record (_id INTEGER PRIMARY KEY AUTOINCREMENT,date TEXT,title TEXT,content TEXT,imgpath TEXT);");
     }
 
     @Override

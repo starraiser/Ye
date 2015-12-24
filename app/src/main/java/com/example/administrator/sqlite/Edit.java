@@ -4,41 +4,69 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+
+import java.io.File;
+import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Edit extends Activity {
 
     private SQLiteDatabase db;
+    private DBManager database;
 
     private Button takePhoto;
     private Button confirm;
     private EditText editTitle;
     private EditText editContent;
+    private ImageView photo;
 
     private String time;
-    private String savePath;
+    private String savePath="mnt/sdcard/Ye/";
+    private String photoPath="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
+        database = new DBManager(this);
 
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date curDate = new Date(System.currentTimeMillis());
+        time = formatter.format(curDate);
 
         confirm = (Button)findViewById(R.id.confirm);
         takePhoto = (Button)findViewById(R.id.takePhoto);
         editTitle = (EditText)findViewById(R.id.editTitle);
         editContent = (EditText)findViewById(R.id.editContent);
+        photo = (ImageView)findViewById(R.id.photo);
+        //editContent.setVisibility(View.INVISIBLE);
+        //editTitle.setVisibility(View.INVISIBLE);
 
         takePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(intent,1);
+
+                File file = new File(savePath);
+                if (!file.exists()) {
+                    file.mkdir();
+                }
+                photoPath=savePath+dateToNum(time)+".jpg";
+                File photo = new File(photoPath);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
+                startActivityForResult(intent, 1);
             }
         });
 
@@ -55,17 +83,31 @@ public class Edit extends Activity {
                 //有正文但没有题目,将正文前10个字设成题目
                 else if(0==editTitle.length()){
                     String tempTitle;
+                    String tempContent=editContent.getText().toString();
                     if(editContent.length()>10){
-                        tempTitle=editContent.getText().toString().substring(0,10);
+                        tempTitle=tempContent.substring(0, 10);
                     }
                     else{
-                        tempTitle=editContent.getText().toString().substring(0,editContent.length());
+                        tempTitle=tempContent.substring(0, editContent.length());
                     }
-                    System.out.println(tempTitle);
+                    Item item = new Item(time,tempTitle,tempContent,photoPath);;
+                    database.addwithoutPic(item);
+
+                    Intent intent = new Intent();
+                    setResult(RESULT_OK,intent);
+                    finish();
                 }
                 //题目和正文都有
                 else{
-                    System.out.println("333333333333");
+                    String tempTitle=editTitle.getText().toString();
+                    String tempContent=editContent.getText().toString();
+
+                    Item item = new Item(time,tempTitle,tempContent,photoPath);
+                    database.addwithPic(item);
+
+                    Intent intent = new Intent();
+                    setResult(RESULT_OK, intent);
+                    finish();
                 }
             }
         });
@@ -79,9 +121,36 @@ public class Edit extends Activity {
             return;
         }
         if(1==requestCode){
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date curDate = new Date(System.currentTimeMillis());
-            time = formatter.format(curDate);
+            try {
+                FileInputStream file = new FileInputStream(photoPath);
+                BitmapFactory.Options opts = new BitmapFactory.Options();
+                //为位图设置100K的缓存
+                opts.inTempStorage = new byte[100 * 1024];
+                //设置位图颜色显示优化方式
+                opts.inPreferredConfig = Bitmap.Config.RGB_565;
+                //设置图片可以被回收
+                opts.inPurgeable = true;
+                //设置位图缩放比例
+                opts.inSampleSize = 4;
+                //设置解码位图的尺寸信息
+                opts.inInputShareable = true;
+                //解码位图
+                System.out.println();
+                Bitmap bitmap1 = BitmapFactory.decodeStream(file, null, opts);
+                photo.setImageBitmap(bitmap1);
+            }catch (Exception e){
+
+            }
         }
+    }
+
+    public String dateToNum(String date){
+        String num="";
+        for(int i=0;i<date.length();i++){
+            if(date.charAt(i)>='0'&&date.charAt(i)<=9){
+                num+=date.charAt(i);
+            }
+        }
+        return num;
     }
 }
