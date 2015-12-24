@@ -79,8 +79,11 @@ public class Edit extends Activity {
                 if (!file.exists()) {
                     file.mkdir();
                 }
+                System.out.println(time);
+                System.out.println(dateToNum(time));
                 photoPath=savePath+dateToNum(time)+".jpg";
                 File photo = new File(photoPath);
+
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
                 startActivityForResult(intent, 1);
             }
@@ -202,7 +205,7 @@ public class Edit extends Activity {
     public String dateToNum(String date){
         String num="";
         for(int i=0;i<date.length();i++){
-            if(date.charAt(i)>='0'&&date.charAt(i)<=9){
+            if(date.charAt(i)>='0'&&date.charAt(i)<='9'){
                 num+=date.charAt(i);
             }
         }
