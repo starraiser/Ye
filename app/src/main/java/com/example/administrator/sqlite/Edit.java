@@ -42,7 +42,7 @@ public class Edit extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit);
+        setContentView(R.layout.activity_edit_new);
 
         database = new DBManager(this);
 
@@ -178,6 +178,7 @@ public class Edit extends Activity {
         editTitle.setText(item.getTitle());
         editContent.setText(item.getContent());
         String photoStr = item.getPhotoPath();
+        photoPath=photoStr;
         if(photoStr!=null) {
             try {
                 FileInputStream file = new FileInputStream(photoStr);
