@@ -33,7 +33,7 @@ public class DBManager {
     }
 
     public void update(Item item){
-        db.execSQL("update Record set time=?,title=?,content=?,imgpath=? where _id=?",
+        db.execSQL("update Record set date=?,title=?,content=?,imgpath=? where _id=?",
                 new Object[]{item.getDate(),item.getTitle(),item.getContent(),item.getPhotoPath(),item.getId()});
     }
 

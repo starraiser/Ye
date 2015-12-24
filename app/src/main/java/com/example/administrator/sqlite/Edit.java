@@ -36,10 +36,14 @@ public class Edit extends Activity {
     private String time;
     private String savePath="mnt/sdcard/Ye/";
     private String photoPath="";
+
+    private int id;
+    private int flag=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
+
         database = new DBManager(this);
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -51,6 +55,18 @@ public class Edit extends Activity {
         editTitle = (EditText)findViewById(R.id.editTitle);
         editContent = (EditText)findViewById(R.id.editContent);
         photo = (ImageView)findViewById(R.id.photo);
+
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        try {
+            flag = bundle.getInt("flag");
+            id = bundle.getInt("id");
+            if (flag == 1) {
+                init(id);
+            }
+        }catch (Exception e){
+
+        }
         //editContent.setVisibility(View.INVISIBLE);
         //editTitle.setVisibility(View.INVISIBLE);
 
@@ -90,8 +106,13 @@ public class Edit extends Activity {
                     else{
                         tempTitle=tempContent.substring(0, editContent.length());
                     }
-                    Item item = new Item(time,tempTitle,tempContent,photoPath);;
-                    database.addwithoutPic(item);
+                    if(flag==0){
+                        Item item = new Item(time,tempTitle,tempContent,photoPath);
+                        database.addwithoutPic(item);
+                    }else{
+                        Item item = new Item(id,time,tempTitle,tempContent,photoPath);
+                        database.update(item);
+                    }
 
                     Intent intent = new Intent();
                     setResult(RESULT_OK,intent);
@@ -102,8 +123,13 @@ public class Edit extends Activity {
                     String tempTitle=editTitle.getText().toString();
                     String tempContent=editContent.getText().toString();
 
-                    Item item = new Item(time,tempTitle,tempContent,photoPath);
-                    database.addwithPic(item);
+                    if(flag==0) {
+                        Item item = new Item(time, tempTitle, tempContent, photoPath);
+                        database.addwithPic(item);
+                    }else{
+                        Item item = new Item(id,time,tempTitle,tempContent,photoPath);
+                        database.update(item);
+                    }
 
                     Intent intent = new Intent();
                     setResult(RESULT_OK, intent);
@@ -144,6 +170,35 @@ public class Edit extends Activity {
         }
     }
 
+    public void init(int id){
+        Item item = database.query(id);
+        editTitle.setText(item.getTitle());
+        editContent.setText(item.getContent());
+        String photoStr = item.getPhotoPath();
+        if(photoStr!=null) {
+            try {
+                FileInputStream file = new FileInputStream(photoStr);
+                BitmapFactory.Options opts = new BitmapFactory.Options();
+                //为位图设置100K的缓存
+                opts.inTempStorage = new byte[100 * 1024];
+                //设置位图颜色显示优化方式
+                opts.inPreferredConfig = Bitmap.Config.RGB_565;
+                //设置图片可以被回收
+                opts.inPurgeable = true;
+                //设置位图缩放比例
+                opts.inSampleSize = 4;
+                //设置解码位图的尺寸信息
+                opts.inInputShareable = true;
+                //解码位图
+
+                Bitmap bitmap1 = BitmapFactory.decodeStream(file, null, opts);
+
+                photo.setImageBitmap(bitmap1);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
     public String dateToNum(String date){
         String num="";
         for(int i=0;i<date.length();i++){

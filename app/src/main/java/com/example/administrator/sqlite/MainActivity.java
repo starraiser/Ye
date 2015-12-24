@@ -102,6 +102,13 @@ public class MainActivity extends Activity {
         }
     }
 
+    protected void onResume(){
+        super.onResume();
+        System.out.println("resumeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+        SimpleAdapter newadapter = new SimpleAdapter(this,getData(),R.layout.list_layout,
+                new String[]{"title","time"},new int[]{R.id.list_title,R.id.list_time});
+        listView.setAdapter(newadapter);
+    }
     public void initDataBase(){
 
         /*try {
