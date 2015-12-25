@@ -18,7 +18,7 @@
             android:layout_height="100dp"
             android:gravity="center"
             android:layout_alignParentTop="true"
-            android:text="标题"
+            android:text="爱你"
             android:textColor="#FFFFFF"
             android:background="#292929"/>
 
