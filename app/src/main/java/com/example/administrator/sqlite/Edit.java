@@ -65,10 +65,8 @@ public class Edit extends Activity {
                 init(id);
             }
         }catch (Exception e){
-
+            e.printStackTrace();
         }
-        //editContent.setVisibility(View.INVISIBLE);
-        //editTitle.setVisibility(View.INVISIBLE);
 
         takePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,9 +77,8 @@ public class Edit extends Activity {
                 if (!file.exists()) {
                     file.mkdir();
                 }
-                System.out.println(time);
-                System.out.println(dateToNum(time));
-                photoPath=savePath+dateToNum(time)+".jpg";
+
+                photoPath=savePath + dateToNum(time) + ".jpg";
                 File photo = new File(photoPath);
 
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
