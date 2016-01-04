@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import java.io.FileInputStream;
 
+import uk.co.senab.photoview.PhotoView;
+
 public class showRecord extends Activity {
 
     private DBManager database;
