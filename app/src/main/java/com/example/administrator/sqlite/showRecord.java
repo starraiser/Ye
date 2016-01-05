@@ -10,6 +10,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tandong.sa.zUImageLoader.core.ImageLoader;
+import com.tandong.sa.zUImageLoader.core.ImageLoaderConfiguration;
+
 import java.io.FileInputStream;
 
 import uk.co.senab.photoview.PhotoView;
@@ -52,23 +55,24 @@ public class showRecord extends Activity {
         photoPath = item.getPhotoPath();
         if(photoPath!=null) {
             try {
-                FileInputStream file = new FileInputStream(photoPath);
-                BitmapFactory.Options opts = new BitmapFactory.Options();
+                //FileInputStream file = new FileInputStream(photoPath);
+                //BitmapFactory.Options opts = new BitmapFactory.Options();
                 //为位图设置100K的缓存
-                opts.inTempStorage = new byte[100 * 1024];
+                //opts.inTempStorage = new byte[100 * 1024];
                 //设置位图颜色显示优化方式
-                opts.inPreferredConfig = Bitmap.Config.RGB_565;
+                //opts.inPreferredConfig = Bitmap.Config.RGB_565;
                 //设置图片可以被回收
-                opts.inPurgeable = true;
+                //opts.inPurgeable = true;
                 //设置位图缩放比例
-                opts.inSampleSize = 4;
+                //opts.inSampleSize = 4;
                 //设置解码位图的尺寸信息
-                opts.inInputShareable = true;
+                //opts.inInputShareable = true;
                 //解码位图
-                System.out.println();
-                Bitmap bitmap1 = BitmapFactory.decodeStream(file, null, opts);
-                System.out.println("321");
-                imageView.setImageBitmap(bitmap1);
+                //Bitmap bitmap1 = BitmapFactory.decodeStream(file, null, opts);
+                //imageView.setImageBitmap(bitmap1);
+                ImageLoaderConfiguration config = ImageLoaderConfiguration.createDefault(getApplicationContext());
+                ImageLoader.getInstance().init(config);
+                ImageLoader.getInstance().displayImage("file:///"+photoPath, imageView);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -91,6 +95,14 @@ public class showRecord extends Activity {
             public void onClick(View v) {
                 database.delete(objectId);
                 finish();
+            }
+        });
+
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+
             }
         });
     }

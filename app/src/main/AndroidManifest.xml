@@ -23,7 +23,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".Edit" />
-        <activity android:name=".showRecord"></activity>
+        <activity android:name=".showRecord" />
+        <activity android:name=".completePic"></activity>
     </application>
 
 </manifest>

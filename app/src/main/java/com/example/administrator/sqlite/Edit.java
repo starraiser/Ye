@@ -17,10 +17,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.tandong.sa.zUImageLoader.core.ImageLoader;
+import com.tandong.sa.zUImageLoader.core.ImageLoaderConfiguration;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import uk.co.senab.photoview.PhotoView;
 
 public class Edit extends Activity {
 
@@ -108,7 +113,7 @@ public class Edit extends Activity {
                     }
                     if(flag==0){
                         Item item = new Item(time,tempTitle,tempContent,photoPath);
-                        database.addwithoutPic(item);
+                        database.addwithPic(item);
                     }else{
                         Item item = new Item(id,time,tempTitle,tempContent,photoPath);
                         database.update(item);
@@ -147,7 +152,7 @@ public class Edit extends Activity {
             return;
         }
         if(1==requestCode){
-            try {
+            try {/*
                 FileInputStream file = new FileInputStream(photoPath);
                 BitmapFactory.Options opts = new BitmapFactory.Options();
                 //为位图设置100K的缓存
@@ -163,7 +168,10 @@ public class Edit extends Activity {
                 //解码位图
                 System.out.println();
                 Bitmap bitmap1 = BitmapFactory.decodeStream(file, null, opts);
-                photo.setImageBitmap(bitmap1);
+                photo.setImageBitmap(bitmap1);*/
+                ImageLoaderConfiguration config = ImageLoaderConfiguration.createDefault(getApplicationContext());
+                ImageLoader.getInstance().init(config);
+                ImageLoader.getInstance().displayImage("file:///" + photoPath, photo);
             }catch (Exception e){
 
             }
@@ -177,7 +185,7 @@ public class Edit extends Activity {
         String photoStr = item.getPhotoPath();
         photoPath=photoStr;
         if(photoStr!=null) {
-            try {
+            try {/*
                 FileInputStream file = new FileInputStream(photoStr);
                 BitmapFactory.Options opts = new BitmapFactory.Options();
                 //为位图设置100K的缓存
@@ -194,7 +202,11 @@ public class Edit extends Activity {
 
                 Bitmap bitmap1 = BitmapFactory.decodeStream(file, null, opts);
 
-                photo.setImageBitmap(bitmap1);
+                photo.setImageBitmap(bitmap1);*/
+
+                ImageLoaderConfiguration config = ImageLoaderConfiguration.createDefault(getApplicationContext());
+                ImageLoader.getInstance().init(config);
+                ImageLoader.getInstance().displayImage("file:///" + photoPath, photo);
             } catch (Exception e) {
                 e.printStackTrace();
             }
