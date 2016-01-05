@@ -70,7 +70,7 @@ public class MainActivity extends Activity {
         listData = database.getList();
         for(int i = 0; i < listData.size(); i++){
             Map<String,Object> map = new HashMap<String,Object>();
-            int id = listData.get(i).getId();
+
             String title = listData.get(i).getTitle();
             String time = listData.get(i).getDate();
             map.put("title",title);
@@ -99,9 +99,9 @@ public class MainActivity extends Activity {
 
     protected void onResume(){  // 重新设置适配器，刷新数据
         super.onResume();
-        SimpleAdapter newadapter = new SimpleAdapter(this,getData(),R.layout.list_layout,
+        SimpleAdapter newAdapter = new SimpleAdapter(this,getData(),R.layout.list_layout,
                 new String[]{"title","time"},new int[]{R.id.list_title,R.id.list_time});
-        listView.setAdapter(newadapter);
+        listView.setAdapter(newAdapter);
     }
 
 }
