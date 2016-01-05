@@ -2,6 +2,7 @@ package com.example.administrator.sqlite;
 
 /**
  * Created by Administrator on 2015/12/23.
+ * 实体
  */
 public class Item {
 

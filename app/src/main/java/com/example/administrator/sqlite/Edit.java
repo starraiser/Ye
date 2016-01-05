@@ -1,36 +1,32 @@
+/**
+ * 编辑页面
+ */
+
 package com.example.administrator.sqlite;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import com.tandong.sa.zUImageLoader.core.ImageLoader;
 import com.tandong.sa.zUImageLoader.core.ImageLoaderConfiguration;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import uk.co.senab.photoview.PhotoView;
-
 public class Edit extends Activity {
 
-    private SQLiteDatabase db;
     private DBManager database;
+
+    final private int NEW_ITEM = 0;
+    final private int UPDATE_ITEM = 1;
 
     private Button takePhoto;
     private Button confirm;
@@ -66,14 +62,14 @@ public class Edit extends Activity {
         try {
             flag = bundle.getInt("flag");
             id = bundle.getInt("id");
-            if (flag == 1) {
+            if (UPDATE_ITEM == flag) {  // 判断是修改记录还是新建记录
                 init(id);
             }
         }catch (Exception e){
             e.printStackTrace();
         }
 
-        takePhoto.setOnClickListener(new View.OnClickListener() {
+        takePhoto.setOnClickListener(new View.OnClickListener() {  // 拍照
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -94,27 +90,25 @@ public class Edit extends Activity {
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //没有正文
-                if(0==editContent.length()){
+                if(0==editContent.length()){  // 没有正文
                     AlertDialog noContent = new AlertDialog.Builder(Edit.this).create();
                     noContent.setTitle("提示");
                     noContent.setMessage("未输入内容！");
                     noContent.show();
-                }
-                //有正文但没有题目,将正文前10个字设成题目
-                else if(0==editTitle.length()){
+                } else if(0 == editTitle.length()){  // 有正文但没有题目,将正文前10个字设成题目
                     String tempTitle;
-                    String tempContent=editContent.getText().toString();
+                    String tempContent = editContent.getText().toString();
+
                     if(editContent.length()>10){
                         tempTitle=tempContent.substring(0, 10);
-                    }
-                    else{
+                    } else{
                         tempTitle=tempContent.substring(0, editContent.length());
                     }
-                    if(flag==0){
+
+                    if(NEW_ITEM == flag){  // 新建记录
                         Item item = new Item(time,tempTitle,tempContent,photoPath);
                         database.addwithPic(item);
-                    }else{
+                    } else{  // 更新记录
                         Item item = new Item(id,time,tempTitle,tempContent,photoPath);
                         database.update(item);
                     }
@@ -122,16 +116,14 @@ public class Edit extends Activity {
                     Intent intent = new Intent();
                     setResult(RESULT_OK,intent);
                     finish();
-                }
-                //题目和正文都有
-                else{
+                } else{  // 题目和正文都有
                     String tempTitle=editTitle.getText().toString();
                     String tempContent=editContent.getText().toString();
 
-                    if(flag==0) {
+                    if(NEW_ITEM == flag) {  // 新建记录
                         Item item = new Item(time, tempTitle, tempContent, photoPath);
                         database.addwithPic(item);
-                    }else{
+                    } else{  // 更新记录
                         Item item = new Item(id,time,tempTitle,tempContent,photoPath);
                         database.update(item);
                     }
@@ -152,7 +144,7 @@ public class Edit extends Activity {
             return;
         }
         if(1==requestCode){
-            try {/*
+            /*
                 FileInputStream file = new FileInputStream(photoPath);
                 BitmapFactory.Options opts = new BitmapFactory.Options();
                 //为位图设置100K的缓存
@@ -169,23 +161,23 @@ public class Edit extends Activity {
                 System.out.println();
                 Bitmap bitmap1 = BitmapFactory.decodeStream(file, null, opts);
                 photo.setImageBitmap(bitmap1);*/
-                ImageLoaderConfiguration config = ImageLoaderConfiguration.createDefault(getApplicationContext());
-                ImageLoader.getInstance().init(config);
-                ImageLoader.getInstance().displayImage("file:///" + photoPath, photo);
-            }catch (Exception e){
-
-            }
+            ImageLoaderConfiguration config =
+                    ImageLoaderConfiguration.createDefault(getApplicationContext());  // 配置
+            ImageLoader.getInstance().init(config);  // 初始化
+            ImageLoader.getInstance().displayImage("file:///" + photoPath, photo);  // 载入图片
         }
     }
 
-    public void init(int id){
+    public void init(int id){  // 初始化页面
         Item item = database.query(id);
+
         editTitle.setText(item.getTitle());
         editContent.setText(item.getContent());
         String photoStr = item.getPhotoPath();
-        photoPath=photoStr;
+        photoPath = photoStr;
+
         if(photoStr!=null) {
-            try {/*
+            /*
                 FileInputStream file = new FileInputStream(photoStr);
                 BitmapFactory.Options opts = new BitmapFactory.Options();
                 //为位图设置100K的缓存
@@ -204,15 +196,14 @@ public class Edit extends Activity {
 
                 photo.setImageBitmap(bitmap1);*/
 
-                ImageLoaderConfiguration config = ImageLoaderConfiguration.createDefault(getApplicationContext());
-                ImageLoader.getInstance().init(config);
-                ImageLoader.getInstance().displayImage("file:///" + photoPath, photo);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            ImageLoaderConfiguration config =
+                    ImageLoaderConfiguration.createDefault(getApplicationContext());  //配置
+            ImageLoader.getInstance().init(config);  // 初始化
+            ImageLoader.getInstance().displayImage("file:///" + photoPath, photo);  // 载入图片
         }
     }
-    public String dateToNum(String date){
+
+    public String dateToNum(String date){  // 提取时间中的数字作为文件名
         String num="";
         for(int i=0;i<date.length();i++){
             if(date.charAt(i)>='0'&&date.charAt(i)<='9'){
