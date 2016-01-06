@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -109,4 +110,12 @@ public class MainActivity extends Activity {
         listView.setAdapter(newAdapter);
     }
 
+    @Override
+    public boolean onKeyDown(int KeyCode, KeyEvent event){
+        if(KeyCode == KeyEvent.KEYCODE_BACK){
+            finish();
+            return false;
+        }
+        return super.onKeyDown(KeyCode,event);
+    }
 }

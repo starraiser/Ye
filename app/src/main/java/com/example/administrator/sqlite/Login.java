@@ -7,8 +7,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import com.tandong.sa.verifi.Form;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
 
@@ -18,6 +16,7 @@ public class Login extends Activity {
     private EditText username;
     private EditText password;
     private TextView login;
+    private TextView register;
 
     DBManager database;
 
@@ -31,6 +30,7 @@ public class Login extends Activity {
         username = (EditText)findViewById(R.id.username);
         password = (EditText)findViewById(R.id.password);
         login = (TextView)findViewById(R.id.login);
+        register = (TextView)findViewById(R.id.register);
 
 
         login.setOnClickListener(new OnClickListener() {
@@ -64,6 +64,15 @@ public class Login extends Activity {
                         toast.show();
                     }
                 }
+            }
+        });
+
+        register.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentToReg = new Intent();
+                intentToReg.setClass(Login.this, Register.class);
+                startActivity(intentToReg);
             }
         });
     }
