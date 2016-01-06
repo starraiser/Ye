@@ -114,7 +114,7 @@ public class MainActivity extends Activity {
     @Override
     public boolean onKeyDown(int KeyCode, KeyEvent event){
         if(KeyCode == KeyEvent.KEYCODE_BACK){
-            Login.temp.finish();
+            Login.temp.finish();  // finish登录页，否则返回键会返回到登录页
             finish();
             //SysApplication.getInstance().exit();  // 使用控制类完全退出程序
             return false;
