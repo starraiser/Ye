@@ -46,6 +46,7 @@ public class Edit extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_new);
+        SysApplication.getInstance().addActivity(this);
 
         database = new DBManager(this);
 

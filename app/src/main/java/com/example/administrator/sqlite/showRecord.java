@@ -32,6 +32,7 @@ public class showRecord extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_record_new);
+        SysApplication.getInstance().addActivity(this);
 
         database=new DBManager(this);
 

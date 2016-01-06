@@ -34,6 +34,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        SysApplication.getInstance().addActivity(this);
 
         database = new DBManager(this);
 
@@ -113,7 +114,7 @@ public class MainActivity extends Activity {
     @Override
     public boolean onKeyDown(int KeyCode, KeyEvent event){
         if(KeyCode == KeyEvent.KEYCODE_BACK){
-            finish();
+            SysApplication.getInstance().exit();
             return false;
         }
         return super.onKeyDown(KeyCode,event);

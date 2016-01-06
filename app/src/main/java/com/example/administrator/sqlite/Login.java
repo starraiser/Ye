@@ -20,10 +20,13 @@ public class Login extends Activity {
 
     DBManager database;
 
+    public Activity temp = this;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        SysApplication.getInstance().addActivity(this);
 
         database=new DBManager(this);
 
@@ -50,7 +53,7 @@ public class Login extends Activity {
                     if(database.checkUser(name,pass)){
                         SharedPreferences mySharedPreferences = getSharedPreferences("test",Activity.MODE_PRIVATE);  // 利用SharedPreferences保存当前用户id
                         SharedPreferences.Editor editor = mySharedPreferences.edit();
-                        editor.putInt("userId",database.getIdByName(name));
+                        editor.putInt("userId", database.getIdByName(name));
                         editor.commit();
 
                         Intent intentToMain = new Intent();
