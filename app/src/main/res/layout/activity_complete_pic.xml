@@ -1,9 +1,9 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
     <FrameLayout
-        android:background="@color/white_gray"
+        android:background="#1F1F1F"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent">
 
         <uk.co.senab.photoview.PhotoView
             android:id="@+id/completePic"

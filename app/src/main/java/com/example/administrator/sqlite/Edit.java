@@ -93,6 +93,18 @@ public class Edit extends Activity {
             }
         });
 
+        photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {  // 点击图片进入查看大图页面
+                Intent intentToPic = new Intent();
+                Bundle bundleToPic = new Bundle();
+                intentToPic.setClass(Edit.this,completePic.class);
+                bundleToPic.putString("photoPath",photoPath);
+                intentToPic.putExtras(bundleToPic);
+                startActivity(intentToPic);
+            }
+        });
+
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

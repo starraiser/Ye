@@ -116,7 +116,7 @@ public class MainActivity extends Activity {
         if(KeyCode == KeyEvent.KEYCODE_BACK){
             Login.temp.finish();
             finish();
-            //SysApplication.getInstance().exit();
+            //SysApplication.getInstance().exit();  // 使用控制类完全退出程序
             return false;
         }
         return super.onKeyDown(KeyCode,event);
