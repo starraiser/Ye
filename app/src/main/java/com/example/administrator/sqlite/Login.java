@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
 
+import com.example.administrator.sqlite.database.DBManager;
 import com.tandong.sa.avatars.AvatarDrawableFactory;
 
 
@@ -48,9 +49,12 @@ public class Login extends Activity {
         options.inMutable = false;
         options.inSampleSize=4;
         AvatarDrawableFactory avatarDrawableFactory = new AvatarDrawableFactory(getResources(),this);
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.mumu,options);
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.mumu, options);
         Drawable avatarDrawable = avatarDrawableFactory.getRoundedAvatarDrawable(bitmap);
         avatar.setImageDrawable(avatarDrawable);
+
+        String cacheName = database.getCache();
+        username.setText(cacheName);
 
         login.setOnClickListener(new OnClickListener() {
             @Override
@@ -71,6 +75,8 @@ public class Login extends Activity {
                         SharedPreferences.Editor editor = mySharedPreferences.edit();
                         editor.putInt("userId", database.getIdByName(name));
                         editor.commit();
+
+                        database.addCache(name);
 
                         Intent intentToMain = new Intent();
                         intentToMain.setClass(Login.this,MainActivity.class);

@@ -1,4 +1,4 @@
-package com.example.administrator.sqlite;
+package com.example.administrator.sqlite.entity;
 
 /**
  * Created by Administrator on 2015/12/23.

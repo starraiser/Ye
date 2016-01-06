@@ -18,7 +18,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
-import com.tandong.sa.zUImageLoader.core.ImageLoaderConfiguration;
+import com.example.administrator.sqlite.database.DBManager;
+import com.example.administrator.sqlite.entity.Item;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,6 +42,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         SysApplication.getInstance().addActivity(this);
+        Login.temp.finish();  // finish登录页，否则返回键会返回到登录页
 
         database = new DBManager(this);
 
@@ -127,7 +129,7 @@ public class MainActivity extends Activity {
                     .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Login.temp.finish();  // finish登录页，否则返回键会返回到登录页
+
                             finish();
                             //SysApplication.getInstance().exit();  // 使用控制类完全退出程序
                         }

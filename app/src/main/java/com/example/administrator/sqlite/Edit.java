@@ -19,6 +19,8 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.example.administrator.sqlite.database.DBManager;
+import com.example.administrator.sqlite.entity.Item;
 import com.tandong.sa.zUImageLoader.core.ImageLoader;
 import com.tandong.sa.zUImageLoader.core.ImageLoaderConfiguration;
 

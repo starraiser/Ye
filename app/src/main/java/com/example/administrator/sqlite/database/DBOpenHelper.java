@@ -1,4 +1,4 @@
-package com.example.administrator.sqlite;
+package com.example.administrator.sqlite.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBOpenHelper extends SQLiteOpenHelper {
 
     private static String DB_NAME = "my3.db";
-    private static int DB_VERSION = 4;
+    private static int DB_VERSION = 5;
 
     public DBOpenHelper(Context context){
         super(context,DB_NAME, null, DB_VERSION);
@@ -25,25 +25,8 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE IF NOT EXISTS " +
                 "USER (_id INTEGER PRIMARY KEY AUTOINCREMENT, userName TEXT, password TEXT);");
 
-        String name = "叶慧靖";
-        String password = "19931030";
-        db.execSQL("insert into USER values(null,?,?)",
-                new Object[]{name, password});
-
-        name="test";
-        password="123456";
-        db.execSQL("insert into USER values(null,?,?)",
-                new Object[]{name, password});
-
-        name="liang";
-        password="123456";
-        db.execSQL("insert into USER values(null,?,?)",
-                new Object[]{name, password});
-
-        name="haha";
-        password="123456";
-        db.execSQL("insert into USER values(null,?,?)",
-                new Object[]{name, password});
+        db.execSQL("CREATE TABLE IF NOT EXISTS CACHE (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "userName TEXT);");
     }
 
     @Override

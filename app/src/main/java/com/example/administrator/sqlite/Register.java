@@ -9,6 +9,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.administrator.sqlite.database.DBManager;
+import com.example.administrator.sqlite.entity.User;
+
 public class Register extends Activity {
 
     private EditText userName;

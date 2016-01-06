@@ -1,9 +1,12 @@
-package com.example.administrator.sqlite;
+package com.example.administrator.sqlite.database;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
+import com.example.administrator.sqlite.entity.User;
+import com.example.administrator.sqlite.entity.Item;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +25,31 @@ public class DBManager {
         db = helper.getWritableDatabase();
     }
 
+    public void addCache(String name){
+        ContentValues cv = new ContentValues();
+        Cursor cursor = db.rawQuery("select _id from USER where userName=?",new String[]{name});
+        if(true){
+            db.execSQL("insert into CACHE values(null,?)",new String[]{name});
+        }
+        else{
+            cv.put("userName", name);
+            //db.update("CACHE",cv,"_id=?",new String[]{Integer.toString(1)});
+            db.execSQL("update CACHE set userName=? where _id=?",new String[]{name,"1"});
+        }
+    }
+
+    public String getCache(){
+        String name="";
+        ContentValues cv = new ContentValues();
+        Cursor tempcursor = db.rawQuery("select _id from USER",null);
+        int count = tempcursor.getCount();
+        Cursor cursor = db.rawQuery("select userName from USER where _id=?",new String[]{Integer.toString(count)});
+        while(cursor.moveToNext()){
+            name=cursor.getString(cursor.getColumnIndex("userName"));
+        }
+
+        return name;
+    }
     public void addUser(User user){  // 添加用户
         String name = user.getUserName();
         String password = user.getPassword();
@@ -71,7 +99,7 @@ public class DBManager {
 
     public void update(Item item){  // 更新记录
         db.execSQL("update Record set date=?,title=?,content=?,imgpath=? where _id=?",
-                new Object[]{item.getDate(),item.getTitle(),item.getContent(),item.getPhotoPath(),item.getId()});
+                new Object[]{item.getDate(), item.getTitle(), item.getContent(), item.getPhotoPath(), item.getId()});
     }
 
     public void delete(int id){  // 删除记录

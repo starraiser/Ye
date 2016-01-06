@@ -27,23 +27,34 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_above="@+id/login"
-        android:layout_marginBottom="30dp">
+        android:layout_marginBottom="30dp"
+        android:background="#FFFFFF">
 
         <EditText
             android:id="@+id/username"
+            android:background="#FFFFFF"
             android:singleLine="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:paddingLeft="20dp"
+            android:gravity="center_vertical"
             android:hint="请输入用户名"
             />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:background="@color/white_gray"/>
         <EditText
             android:id="@+id/password"
             android:singleLine="true"
+            android:background="#FFFFFF"
             android:inputType="textPassword"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
             android:paddingLeft="20dp"
             android:hint="请输入密码"/>
 
