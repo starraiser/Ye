@@ -20,7 +20,7 @@ public class Login extends Activity {
 
     DBManager database;
 
-    public Activity temp = this;
+    public static Login temp = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +28,7 @@ public class Login extends Activity {
         setContentView(R.layout.activity_login);
         SysApplication.getInstance().addActivity(this);
 
+        temp=this;
         database=new DBManager(this);
 
         username = (EditText)findViewById(R.id.username);

@@ -114,7 +114,9 @@ public class MainActivity extends Activity {
     @Override
     public boolean onKeyDown(int KeyCode, KeyEvent event){
         if(KeyCode == KeyEvent.KEYCODE_BACK){
-            SysApplication.getInstance().exit();
+            Login.temp.finish();
+            finish();
+            //SysApplication.getInstance().exit();
             return false;
         }
         return super.onKeyDown(KeyCode,event);
