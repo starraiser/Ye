@@ -7,6 +7,7 @@ package com.example.administrator.sqlite;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -24,6 +25,7 @@ import com.tandong.sa.zUImageLoader.core.ImageLoaderConfiguration;
 public class Edit extends Activity {
 
     private DBManager database;
+    private int userId;
 
     final private int NEW_ITEM = 0;
     final private int UPDATE_ITEM = 1;
@@ -46,6 +48,9 @@ public class Edit extends Activity {
         setContentView(R.layout.activity_edit_new);
 
         database = new DBManager(this);
+
+        SharedPreferences sharedPreferences = getSharedPreferences("test",Activity.MODE_PRIVATE);  // 获取当前用户id
+        userId = sharedPreferences.getInt("userId",-1);
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date curDate = new Date(System.currentTimeMillis());
@@ -106,10 +111,10 @@ public class Edit extends Activity {
                     }
 
                     if(NEW_ITEM == flag){  // 新建记录
-                        Item item = new Item(time,tempTitle,tempContent,photoPath);
+                        Item item = new Item(userId,time,tempTitle,tempContent,photoPath);
                         database.addwithPic(item);
                     } else{  // 更新记录
-                        Item item = new Item(id,time,tempTitle,tempContent,photoPath);
+                        Item item = new Item(id,userId,time,tempTitle,tempContent,photoPath);
                         database.update(item);
                     }
 
@@ -121,10 +126,10 @@ public class Edit extends Activity {
                     String tempContent=editContent.getText().toString();
 
                     if(NEW_ITEM == flag) {  // 新建记录
-                        Item item = new Item(time, tempTitle, tempContent, photoPath);
+                        Item item = new Item(userId,time, tempTitle, tempContent, photoPath);
                         database.addwithPic(item);
                     } else{  // 更新记录
-                        Item item = new Item(id,time,tempTitle,tempContent,photoPath);
+                        Item item = new Item(id,userId,time,tempTitle,tempContent,photoPath);
                         database.update(item);
                     }
 

@@ -22,14 +22,51 @@ public class DBManager {
         db = helper.getWritableDatabase();
     }
 
+    public void addUser(User user){  // 添加用户
+        String name = user.getUserName();
+        String password = user.getPassword();
+        db.execSQL("insert into USER values(null,?,?)",
+                new Object[]{name, password});
+    }
+
+    public boolean checkUser(String name, String password){  // 检查用户是否存在or密码是否正确
+        String userPassword="";
+        ContentValues cv = new ContentValues();
+        Cursor cursor = db.rawQuery("select * from USER where userName=?",new String[]{name});
+
+        if(cursor.getCount() == 0){  // 判断是否存在该用户
+            return false;
+        }
+
+        while(cursor.moveToNext()){
+            userPassword = cursor.getString(cursor.getColumnIndex("password"));  // 获取用户名对应密码
+        }
+
+        if(userPassword.equals(password)){  // 密码正确
+            return true;
+        } else{  // 密码错误
+            return false;
+        }
+    }
+
+    public int getIdByName(String name){  // 通过用户名查找用户id
+        int id=-1;
+        ContentValues cv = new ContentValues();
+        Cursor cursor = db.rawQuery("select _id from USER where userName=?",new String[]{name});
+        while(cursor.moveToNext()){
+            id = cursor.getInt(cursor.getColumnIndex("_id"));
+        }
+        return id;
+    }
+
     public void addwithPic(Item item){  // 增加有图片记录
-        db.execSQL("insert into Record values(null,?,?,?,?)",
-                new Object[]{item.getDate(),item.getTitle(),item.getContent(),item.getPhotoPath()});
+        db.execSQL("insert into Record values(null,?,?,?,?,?)",
+                new Object[]{item.getUserId(),item.getDate(),item.getTitle(),item.getContent(),item.getPhotoPath()});
     }
 
     public void addwithoutPic(Item item){  // 增加无图片记录
-        db.execSQL("insert into Record values(null,?,?,?,null)",
-                new Object[]{item.getDate(),item.getTitle(),item.getContent()});
+        db.execSQL("insert into Record values(null,?,?,?,?,null)",
+                new Object[]{item.getUserId(),item.getDate(),item.getTitle(),item.getContent()});
     }
 
     public void update(Item item){  // 更新记录
@@ -47,6 +84,7 @@ public class DBManager {
         Cursor cursor = db.rawQuery("select * from Record where _id=?",new String[]{Integer.toString(id)});
         while(cursor.moveToNext()){
             int _id = cursor.getInt(cursor.getColumnIndex("_id"));
+            int userId = cursor.getInt(cursor.getColumnIndex("userId"));
             String time = cursor.getString(cursor.getColumnIndex("date"));
             String title = cursor.getString(cursor.getColumnIndex("title"));
             String content = cursor.getString(cursor.getColumnIndex("content"));
@@ -58,18 +96,19 @@ public class DBManager {
         return item;
     }
 
-    public List<Item> getList(){  // 获取所有记录
+    public List<Item> getListOfUser(int userId){  // 获取所有记录
         list = new ArrayList<Item>();
         ContentValues cv = new ContentValues();
-        Cursor cursor = db.rawQuery("select * from Record", null);
+        Cursor cursor = db.rawQuery("select * from Record where userId=?", new String[]{Integer.toString(userId)});
         while(cursor.moveToNext()){
             int _id = cursor.getInt(cursor.getColumnIndex("_id"));
+            int _userId = cursor.getInt(cursor.getColumnIndex("userId"));
             String time = cursor.getString(cursor.getColumnIndex("date"));
             String title = cursor.getString(cursor.getColumnIndex("title"));
             String content = cursor.getString(cursor.getColumnIndex("content"));
             String path = cursor.getString(cursor.getColumnIndex("imgpath"));
 
-            Item item = new Item(_id, time, title, content, path);
+            Item item = new Item(_id, userId, time, title, content, path);
 
             list.add(item);
         }

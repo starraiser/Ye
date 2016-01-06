@@ -8,6 +8,7 @@ public class Item {
 
     //ID
     private int _id;
+    private int userId;
     //创建时间
     private String Time;
     //标题
@@ -18,15 +19,17 @@ public class Item {
     private String Path;
 
     public Item() {}
-    public Item(int id,String time,String title,String content,String path){
+    public Item(int id,int userId, String time,String title,String content,String path){
         _id = id;
+        this.userId = userId;
         Time = time;
         Title = title;
         Content = content;
         Path = path;
     }
 
-    public Item(String time,String title,String content,String path){
+    public Item(int userId,String time,String title,String content,String path){
+        this.userId = userId;
         Time = time;
         Title = title;
         Content = content;
@@ -36,6 +39,14 @@ public class Item {
     public void setId (int id) { _id=id; }
 
     public int getId () { return _id; }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
 
     public String getDate(){ return Time; }
 

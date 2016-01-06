@@ -6,6 +6,7 @@ package com.example.administrator.sqlite;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -20,6 +21,7 @@ import java.util.Map;
 public class MainActivity extends Activity {
 
     private DBManager database;
+    private int userId;
 
     private ListView listView;
     private Button newItem;
@@ -34,6 +36,9 @@ public class MainActivity extends Activity {
 
         database = new DBManager(this);
 
+        SharedPreferences sharedPreferences = getSharedPreferences("test",Activity.MODE_PRIVATE);  // 获取当前用户id
+        userId = sharedPreferences.getInt("userId",-1);
+
         listView = (ListView)findViewById(R.id.list);
         newItem = (Button)findViewById(R.id.newItem);
 
@@ -43,7 +48,7 @@ public class MainActivity extends Activity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {  // 列表监听器
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                int id = database.getList().get(arg2).getId();  // 获取点击列表中的数据的id
+                int id = database.getListOfUser(userId).get(arg2).getId();  // 获取点击列表中的数据的id
 
                 Intent intent = new Intent(MainActivity.this,showRecord.class);
                 Bundle bundle = new Bundle();
@@ -67,8 +72,8 @@ public class MainActivity extends Activity {
 
     private List<Map<String ,Object>> getData(){  // 获取数据库记录
         List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
-        listData = database.getList();
-        for(int i = 0; i < listData.size(); i++){
+        listData = database.getListOfUser(userId);
+        for (int i = 0; i < listData.size(); i++){
             Map<String,Object> map = new HashMap<String,Object>();
 
             String title = listData.get(i).getTitle();
