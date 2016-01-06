@@ -49,7 +49,9 @@ public class Register extends Activity {
                             toast.show();
                         } else {
                             User user = new User(tempName, tempPassword);
-                            database.addUser(user);
+
+                            database.addUser(user);  // 向数据库添加新用户
+                            database.addCache(tempName);  // 修改缓存的用户名
 
                             SharedPreferences mySharedPreferences =
                                     getSharedPreferences("test", Activity.MODE_PRIVATE);  // 利用SharedPreferences保存当前用户id

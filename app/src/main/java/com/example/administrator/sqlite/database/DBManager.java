@@ -25,31 +25,29 @@ public class DBManager {
         db = helper.getWritableDatabase();
     }
 
-    public void addCache(String name){
+    public void addCache(String name){  // 添加或更新记住用户名的缓存
         ContentValues cv = new ContentValues();
-        Cursor cursor = db.rawQuery("select _id from USER where userName=?",new String[]{name});
-        if(true){
+        Cursor cursor = db.rawQuery("select _id from CACHE",null);
+        if(0 == cursor.getCount()){
             db.execSQL("insert into CACHE values(null,?)",new String[]{name});
         }
         else{
-            cv.put("userName", name);
-            //db.update("CACHE",cv,"_id=?",new String[]{Integer.toString(1)});
             db.execSQL("update CACHE set userName=? where _id=?",new String[]{name,"1"});
         }
     }
 
-    public String getCache(){
+    public String getCache(){  // 获取缓存的用户名
         String name="";
         ContentValues cv = new ContentValues();
-        Cursor tempcursor = db.rawQuery("select _id from USER",null);
-        int count = tempcursor.getCount();
-        Cursor cursor = db.rawQuery("select userName from USER where _id=?",new String[]{Integer.toString(count)});
+        Cursor cursor = db.rawQuery("select userName from CACHE where _id=?",new String[]{Integer.toString(1)});
+
         while(cursor.moveToNext()){
             name=cursor.getString(cursor.getColumnIndex("userName"));
         }
 
         return name;
     }
+
     public void addUser(User user){  // 添加用户
         String name = user.getUserName();
         String password = user.getPassword();

@@ -76,7 +76,7 @@ public class Login extends Activity {
                         editor.putInt("userId", database.getIdByName(name));
                         editor.commit();
 
-                        database.addCache(name);
+                        database.addCache(name);  // 修改缓存的用户名
 
                         Intent intentToMain = new Intent();
                         intentToMain.setClass(Login.this,MainActivity.class);
