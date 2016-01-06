@@ -3,12 +3,18 @@ package com.example.administrator.sqlite;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
+
+import com.tandong.sa.avatars.AvatarDrawableFactory;
 
 
 public class Login extends Activity {
@@ -17,6 +23,7 @@ public class Login extends Activity {
     private EditText password;
     private TextView login;
     private TextView register;
+    private ImageView avatar;
 
     DBManager database;
 
@@ -35,7 +42,15 @@ public class Login extends Activity {
         password = (EditText)findViewById(R.id.password);
         login = (TextView)findViewById(R.id.login);
         register = (TextView)findViewById(R.id.register);
+        avatar = (ImageView)findViewById(R.id.loginAvatar);
 
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inMutable = false;
+        options.inSampleSize=4;
+        AvatarDrawableFactory avatarDrawableFactory = new AvatarDrawableFactory(getResources(),this);
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.mumu,options);
+        Drawable avatarDrawerable = avatarDrawableFactory.getRoundedAvatarDrawable(bitmap);
+        avatar.setImageDrawable(avatarDrawerable);
 
         login.setOnClickListener(new OnClickListener() {
             @Override

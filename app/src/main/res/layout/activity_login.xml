@@ -9,6 +9,18 @@
 
     tools:context="com.example.administrator.sqlite.Login">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/loginLinear">
+        <ImageView
+            android:id="@+id/loginAvatar"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true" />
+    </RelativeLayout>
+
     <LinearLayout
         android:id="@+id/loginLinear"
         android:layout_width="match_parent"
@@ -48,7 +60,7 @@
             android:paddingTop="4dp"
             android:paddingBottom="4dp"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="40dp"
             android:gravity="center"
             android:text="登录"
             android:textColor="#FFFFFF"
@@ -68,7 +80,7 @@
             android:paddingTop="4dp"
             android:paddingBottom="4dp"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="40dp"
             android:gravity="center"
             android:text="注册"
             android:textColor="#FFFFFF"

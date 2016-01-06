@@ -36,29 +36,38 @@ public class Register extends Activity {
             public void onClick(View v) {
                 String tempPassword = password.getText().toString();
                 String tempPasswordAgain = passwordAgain.getText().toString();
-                if(tempPassword.equals(tempPasswordAgain)){
-                    String tempName = userName.getText().toString();
-                    if(-1 != database.getIdByName(tempName)){
+                String tempName = userName.getText().toString();
+                if((0 !=tempName.length())&&(0 != tempPasswordAgain.length())
+                        &&(0 != tempPassword.length())) {
+                    if (tempPassword.equals(tempPasswordAgain)) {
+                        if (-1 != database.getIdByName(tempName)) {
+                            Toast toast = Toast.makeText(getApplicationContext(),
+                                    "用户已存在", Toast.LENGTH_SHORT);
+                            toast.show();
+                        } else {
+                            User user = new User(tempName, tempPassword);
+                            database.addUser(user);
+
+                            SharedPreferences mySharedPreferences =
+                                    getSharedPreferences("test", Activity.MODE_PRIVATE);  // 利用SharedPreferences保存当前用户id
+                            SharedPreferences.Editor editor = mySharedPreferences.edit();
+                            editor.putInt("userId", database.getIdByName(tempName));
+                            editor.commit();
+
+                            Intent intentToMain = new Intent();
+                            intentToMain.setClass(Register.this, MainActivity.class);
+                            startActivity(intentToMain);
+                            finish();
+                        }
+                    } else {
                         Toast toast = Toast.makeText(getApplicationContext(),
-                                "用户已存在",Toast.LENGTH_SHORT);
+                                "两次密码输入不一致", Toast.LENGTH_SHORT);
                         toast.show();
-                    } else{
-                        User user = new User(tempName,tempPassword);
-                        database.addUser(user);
-
-                        SharedPreferences mySharedPreferences = getSharedPreferences("test",Activity.MODE_PRIVATE);  // 利用SharedPreferences保存当前用户id
-                        SharedPreferences.Editor editor = mySharedPreferences.edit();
-                        editor.putInt("userId",database.getIdByName(tempName));
-                        editor.commit();
-
-                        Intent intentToMain = new Intent();
-                        intentToMain.setClass(Register.this,MainActivity.class);
-                        startActivity(intentToMain);
-                        finish();
                     }
-                } else{
+                }
+                else{
                     Toast toast = Toast.makeText(getApplicationContext(),
-                            "两次密码输入不一致", Toast.LENGTH_SHORT);
+                            "请输入用户名和密码", Toast.LENGTH_SHORT);
                     toast.show();
                 }
             }
