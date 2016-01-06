@@ -44,13 +44,13 @@ public class Login extends Activity {
         register = (TextView)findViewById(R.id.register);
         avatar = (ImageView)findViewById(R.id.loginAvatar);
 
-        BitmapFactory.Options options = new BitmapFactory.Options();
+        BitmapFactory.Options options = new BitmapFactory.Options();  // 添加圆形头像
         options.inMutable = false;
         options.inSampleSize=4;
         AvatarDrawableFactory avatarDrawableFactory = new AvatarDrawableFactory(getResources(),this);
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.mumu,options);
-        Drawable avatarDrawerable = avatarDrawableFactory.getRoundedAvatarDrawable(bitmap);
-        avatar.setImageDrawable(avatarDrawerable);
+        Drawable avatarDrawable = avatarDrawableFactory.getRoundedAvatarDrawable(bitmap);
+        avatar.setImageDrawable(avatarDrawable);
 
         login.setOnClickListener(new OnClickListener() {
             @Override

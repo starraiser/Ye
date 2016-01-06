@@ -5,6 +5,9 @@
 package com.example.administrator.sqlite;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,6 +17,9 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+
+import com.tandong.sa.zUImageLoader.core.ImageLoaderConfiguration;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -114,8 +120,28 @@ public class MainActivity extends Activity {
     @Override
     public boolean onKeyDown(int KeyCode, KeyEvent event){
         if(KeyCode == KeyEvent.KEYCODE_BACK){
-            Login.temp.finish();  // finish登录页，否则返回键会返回到登录页
-            finish();
+
+            Dialog alertDialog = new AlertDialog.Builder(this).
+                    setTitle("Warning")
+                    .setMessage("确定要退出吗")
+                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Login.temp.finish();  // finish登录页，否则返回键会返回到登录页
+                            finish();
+                            //SysApplication.getInstance().exit();  // 使用控制类完全退出程序
+                        }
+                    })
+                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    })
+                    .create();
+            alertDialog.show();
+            //Login.temp.finish();  // finish登录页，否则返回键会返回到登录页
+            //finish();
             //SysApplication.getInstance().exit();  // 使用控制类完全退出程序
             return false;
         }
