@@ -87,7 +87,7 @@ public class Login extends Activity {
                 if(msg.what==0x111){
                     runningFlag = 1;
                     System.out.println(isInterrupted);
-                    relativeLayout.setVisibility(View.VISIBLE);
+                    //relativeLayout.setVisibility(View.VISIBLE);
                     //progressBar.setVisibility(View.VISIBLE);
                 }else{
                         String name = username.getText().toString();  // 获取edittext里的用户名密码
@@ -153,6 +153,7 @@ public class Login extends Activity {
                             "请输入密码", Toast.LENGTH_SHORT);
                     toast.show();
                 } else {
+                    relativeLayout.setVisibility(View.VISIBLE);
                     thread =new Thread(new Runnable() {
                         @Override
                         public void run() {
