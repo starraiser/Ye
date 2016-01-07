@@ -75,6 +75,9 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setClass(MainActivity.this,Edit.class);
+                Bundle bundleToEdit = new Bundle();
+                bundleToEdit.putInt("flag",0);  // 传递flag到编辑页面以判定是从此页面跳转到编辑页面
+                intent.putExtras(bundleToEdit);
                 startActivityForResult(intent,1);
             }
         });
