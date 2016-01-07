@@ -7,18 +7,25 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
 
 import com.example.administrator.sqlite.database.DBManager;
 import com.tandong.sa.avatars.AvatarDrawableFactory;
+
+import java.util.logging.LogRecord;
 
 
 public class Login extends Activity {
@@ -29,6 +36,11 @@ public class Login extends Activity {
     private TextView register;
     private ImageView avatar;
     private CheckBox rememberPass;
+    private ProgressBar progressBar;
+    private RelativeLayout relativeLayout;
+
+    private int mProgressStatus=0;
+    private Handler mHandler;
 
     DBManager database;
 
@@ -49,6 +61,9 @@ public class Login extends Activity {
         register = (TextView)findViewById(R.id.register);
         avatar = (ImageView)findViewById(R.id.loginAvatar);
         rememberPass = (CheckBox)findViewById(R.id.rememberPass);
+        progressBar = (ProgressBar)findViewById(R.id.progressBar);
+        relativeLayout = (RelativeLayout)findViewById(R.id.loginRelative);
+
 
         BitmapFactory.Options options = new BitmapFactory.Options();  // 添加圆形头像
         options.inMutable = false;
@@ -58,9 +73,55 @@ public class Login extends Activity {
         Drawable avatarDrawable = avatarDrawableFactory.getRoundedAvatarDrawable(bitmap);
         avatar.setImageDrawable(avatarDrawable);
 
+        relativeLayout.setVisibility(View.INVISIBLE);
+        //progressBar.setVisibility(View.INVISIBLE);
         String cacheName = database.getCacheName();
         username.setText(cacheName);
 
+        mHandler = new Handler(){
+            @Override
+            public void handleMessage(Message msg){
+                if(msg.what==0x111){
+                    relativeLayout.setVisibility(View.VISIBLE);
+                    //progressBar.setVisibility(View.VISIBLE);
+                }else{
+                    if (0 == username.getText().length()) {  // 判断用户名是否为空
+                        Toast toast = Toast.makeText(getApplicationContext(),
+                                "请输入用户名", Toast.LENGTH_SHORT);
+                        toast.show();
+                    } else if (0 == password.getText().length()) {  // 判断密码是否为空
+                        Toast toast = Toast.makeText(getApplicationContext(),
+                                "请输入密码", Toast.LENGTH_SHORT);
+                        toast.show();
+                    } else {
+                        String name = username.getText().toString();  // 获取edittext里的用户名密码
+                        String pass = password.getText().toString();
+                        if (database.checkUser(name, pass)) {
+                            SharedPreferences mySharedPreferences = getSharedPreferences("info", Activity.MODE_PRIVATE);  // 利用SharedPreferences保存当前用户id
+                            SharedPreferences.Editor editor = mySharedPreferences.edit();
+
+                            editor.putInt("userId", database.getIdByName(name));
+                            editor.commit();
+
+                            if (rememberPass.isChecked()) {
+                                database.addCache(name, pass, 1);  // 修改缓存的用户名
+                            } else {
+                                database.addCache(name, pass, 0);
+                            }
+
+                            Intent intentToMain = new Intent();
+                            intentToMain.setClass(Login.this, MainActivity.class);
+                            startActivity(intentToMain);
+                            finish();
+                        } else {
+                            Toast toast = Toast.makeText(getApplicationContext(),
+                                    "用户名或密码不正确", Toast.LENGTH_SHORT);
+                            toast.show();
+                        }
+                    }
+                }
+            }
+        };
         if(1 == database.getCacheFlag()){
             String pass = database.getCachePassword();
             password.setText(pass);
@@ -81,40 +142,34 @@ public class Login extends Activity {
         login.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (0 == username.getText().length()) {  // 判断用户名是否为空
-                    Toast toast = Toast.makeText(getApplicationContext(),
-                            "请输入用户名", Toast.LENGTH_SHORT);
-                    toast.show();
-                } else if (0 == password.getText().length()) {  // 判断密码是否为空
-                    Toast toast = Toast.makeText(getApplicationContext(),
-                            "请输入密码", Toast.LENGTH_SHORT);
-                    toast.show();
-                } else {
-                    String name = username.getText().toString();  // 获取edittext里的用户名密码
-                    String pass = password.getText().toString();
-                    if (database.checkUser(name, pass)) {
-                        SharedPreferences mySharedPreferences = getSharedPreferences("info", Activity.MODE_PRIVATE);  // 利用SharedPreferences保存当前用户id
-                        SharedPreferences.Editor editor = mySharedPreferences.edit();
-
-                        editor.putInt("userId", database.getIdByName(name));
-                        editor.commit();
-
-                        if (rememberPass.isChecked()) {
-                            database.addCache(name, pass, 1);  // 修改缓存的用户名
-                        } else {
-                            database.addCache(name, pass, 0);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        while (true) {
+                            mProgressStatus = doWork();
+                            Message m = new Message();
+                            if (mProgressStatus < 100) {
+                                m.what = 0x111;
+                                mHandler.sendMessage(m);
+                            } else {
+                                m.what = 0x110;
+                                mHandler.sendMessage(m);
+                                break;
+                            }
                         }
-
-                        Intent intentToMain = new Intent();
-                        intentToMain.setClass(Login.this, MainActivity.class);
-                        startActivity(intentToMain);
-                        finish();
-                    } else {
-                        Toast toast = Toast.makeText(getApplicationContext(),
-                                "用户名或密码不正确", Toast.LENGTH_SHORT);
-                        toast.show();
                     }
-                }
+
+                    private int doWork() {
+                        mProgressStatus += 10;
+                        try {
+                            //progressBar.setVisibility(View.VISIBLE);
+                            Thread.sleep(100);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        return mProgressStatus;
+                    }
+                }).start();
             }
         });
 
