@@ -10,16 +10,21 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 import com.example.administrator.sqlite.database.DBManager;
 import com.example.administrator.sqlite.entity.Item;
+import com.tandong.sa.avatars.AvatarDrawableFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,6 +38,7 @@ public class MainActivity extends Activity {
 
     private ListView listView;
     private Button newItem;
+    private ImageView avatar;
 
     private List<Item> listData;  // 数据
     private SimpleAdapter adapter;  // 适配器
@@ -51,6 +57,15 @@ public class MainActivity extends Activity {
 
         listView = (ListView)findViewById(R.id.list);
         newItem = (Button)findViewById(R.id.newItem);
+        avatar = (ImageView)findViewById(R.id.mainAvatar);
+
+        BitmapFactory.Options options = new BitmapFactory.Options();  // 添加圆形头像
+        options.inMutable = false;
+        options.inSampleSize=4;
+        AvatarDrawableFactory avatarDrawableFactory = new AvatarDrawableFactory(getResources(),this);
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.mumu, options);
+        Drawable avatarDrawable = avatarDrawableFactory.getRoundedAvatarDrawable(bitmap);
+        avatar.setImageDrawable(avatarDrawable);
 
         adapter = new SimpleAdapter(this,getData(),R.layout.list_layout,
                 new String[]{"title","time"},new int[]{R.id.list_title,R.id.list_time});

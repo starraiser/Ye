@@ -22,6 +22,14 @@
             android:textColor="#FFFFFF"
             android:background="#292929"/>
 
+        <ImageView
+            android:id="@+id/mainAvatar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_alignParentLeft="true" />
+
         <Button
             android:id="@+id/newItem"
             android:layout_width="wrap_content"
