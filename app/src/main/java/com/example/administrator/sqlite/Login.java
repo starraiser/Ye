@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,6 +26,7 @@ public class Login extends Activity {
     private TextView login;
     private TextView register;
     private ImageView avatar;
+    private CheckBox rememberPass;
 
     DBManager database;
 
@@ -44,6 +46,7 @@ public class Login extends Activity {
         login = (TextView)findViewById(R.id.login);
         register = (TextView)findViewById(R.id.register);
         avatar = (ImageView)findViewById(R.id.loginAvatar);
+        rememberPass = (CheckBox)findViewById(R.id.rememberPass);
 
         BitmapFactory.Options options = new BitmapFactory.Options();  // 添加圆形头像
         options.inMutable = false;
@@ -53,39 +56,49 @@ public class Login extends Activity {
         Drawable avatarDrawable = avatarDrawableFactory.getRoundedAvatarDrawable(bitmap);
         avatar.setImageDrawable(avatarDrawable);
 
-        String cacheName = database.getCache();
+        String cacheName = database.getCacheName();
         username.setText(cacheName);
+
+        if(1 == database.getCacheFlag()){
+            String pass = database.getCachePassword();
+            password.setText(pass);
+            rememberPass.setChecked(true);
+        }
 
         login.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (0 == username.getText().length()) {  // 判断用户名是否为空
                     Toast toast = Toast.makeText(getApplicationContext(),
-                            "请输入用户名",Toast.LENGTH_SHORT);
+                            "请输入用户名", Toast.LENGTH_SHORT);
                     toast.show();
                 } else if (0 == password.getText().length()) {  // 判断密码是否为空
                     Toast toast = Toast.makeText(getApplicationContext(),
-                            "请输入密码",Toast.LENGTH_SHORT);
+                            "请输入密码", Toast.LENGTH_SHORT);
                     toast.show();
                 } else {
                     String name = username.getText().toString();  // 获取edittext里的用户名密码
                     String pass = password.getText().toString();
-                    if(database.checkUser(name,pass)){
-                        SharedPreferences mySharedPreferences = getSharedPreferences("test",Activity.MODE_PRIVATE);  // 利用SharedPreferences保存当前用户id
+                    if (database.checkUser(name, pass)) {
+                        SharedPreferences mySharedPreferences = getSharedPreferences("info", Activity.MODE_PRIVATE);  // 利用SharedPreferences保存当前用户id
                         SharedPreferences.Editor editor = mySharedPreferences.edit();
+
                         editor.putInt("userId", database.getIdByName(name));
                         editor.commit();
 
-                        database.addCache(name);  // 修改缓存的用户名
+                        if (rememberPass.isChecked()) {
+                            database.addCache(name,pass,1);  // 修改缓存的用户名
+                        } else{
+                            database.addCache(name,pass,0);
+                        }
 
                         Intent intentToMain = new Intent();
-                        intentToMain.setClass(Login.this,MainActivity.class);
+                        intentToMain.setClass(Login.this, MainActivity.class);
                         startActivity(intentToMain);
                         finish();
-                    }
-                    else{
+                    } else {
                         Toast toast = Toast.makeText(getApplicationContext(),
-                                "用户名或密码不正确",Toast.LENGTH_SHORT);
+                                "用户名或密码不正确", Toast.LENGTH_SHORT);
                         toast.show();
                     }
                 }

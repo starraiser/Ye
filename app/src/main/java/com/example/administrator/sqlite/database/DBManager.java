@@ -25,18 +25,20 @@ public class DBManager {
         db = helper.getWritableDatabase();
     }
 
-    public void addCache(String name){  // 添加或更新记住用户名的缓存
+    public void addCache(String name, String password, int flag){  // 添加或更新记住用户名的缓存
         ContentValues cv = new ContentValues();
         Cursor cursor = db.rawQuery("select _id from CACHE",null);
         if(0 == cursor.getCount()){
-            db.execSQL("insert into CACHE values(null,?)",new String[]{name});
+            db.execSQL("insert into CACHE values(null,?,?,?)",
+                    new String[]{name,password,Integer.toString(flag)});
         }
         else{
-            db.execSQL("update CACHE set userName=? where _id=?",new String[]{name,"1"});
+            db.execSQL("update CACHE set userName=? ,password=?,flag=? where _id=1",
+                    new String[]{name,password,Integer.toString(flag)});
         }
     }
 
-    public String getCache(){  // 获取缓存的用户名
+    public String getCacheName(){  // 获取缓存的用户名
         String name="";
         ContentValues cv = new ContentValues();
         Cursor cursor = db.rawQuery("select userName from CACHE where _id=?",new String[]{Integer.toString(1)});
@@ -46,6 +48,29 @@ public class DBManager {
         }
 
         return name;
+    }
+
+    public String getCachePassword(){
+        String password="";
+        ContentValues cv = new ContentValues();
+        Cursor cursor = db.rawQuery("select password from CACHE where _id=?",new String[]{Integer.toString(1)});
+
+        while(cursor.moveToNext()){
+            password=cursor.getString(cursor.getColumnIndex("password"));
+        }
+
+        return password;
+    }
+
+    public int getCacheFlag(){
+        int flag = 0;
+        ContentValues cv = new ContentValues();
+        Cursor cursor = db.rawQuery("select flag from CACHE where _id=?",new String[]{Integer.toString(1)});
+
+        while(cursor.moveToNext()){
+            flag = cursor.getInt(cursor.getColumnIndex("flag"));
+        }
+        return flag;
     }
 
     public void addUser(User user){  // 添加用户
@@ -115,7 +140,6 @@ public class DBManager {
             String title = cursor.getString(cursor.getColumnIndex("title"));
             String content = cursor.getString(cursor.getColumnIndex("content"));
             String path = cursor.getString(cursor.getColumnIndex("imgpath"));
-
             item = new Item(_id, time, title, content, path);
 
         }

@@ -46,7 +46,7 @@ public class MainActivity extends Activity {
 
         database = new DBManager(this);
 
-        SharedPreferences sharedPreferences = getSharedPreferences("test",Activity.MODE_PRIVATE);  // 获取当前用户id
+        SharedPreferences sharedPreferences = getSharedPreferences("info",Activity.MODE_PRIVATE);  // 获取当前用户id
         userId = sharedPreferences.getInt("userId",-1);
 
         listView = (ListView)findViewById(R.id.list);

@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBOpenHelper extends SQLiteOpenHelper {
 
     private static String DB_NAME = "my3.db";
-    private static int DB_VERSION = 5;
+    private static int DB_VERSION = 6;
 
     public DBOpenHelper(Context context){
         super(context,DB_NAME, null, DB_VERSION);
@@ -26,7 +26,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                 "USER (_id INTEGER PRIMARY KEY AUTOINCREMENT, userName TEXT, password TEXT);");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS CACHE (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "userName TEXT);");
+                "userName TEXT, password TEXT, flag INTEGER);");
     }
 
     @Override

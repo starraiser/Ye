@@ -71,7 +71,7 @@ public class Edit extends Activity {
 
         database = new DBManager(this);
 
-        SharedPreferences sharedPreferences = getSharedPreferences("test",Activity.MODE_PRIVATE);  // 获取当前用户id
+        SharedPreferences sharedPreferences = getSharedPreferences("info",Activity.MODE_PRIVATE);  // 获取当前用户id
         userId = sharedPreferences.getInt("userId",-1);
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
