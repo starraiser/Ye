@@ -7,7 +7,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -65,6 +67,17 @@ public class Login extends Activity {
             rememberPass.setChecked(true);
         }
 
+        password.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        password.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE ||
+                        (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                    login.performClick();
+                    return true;
+                }
+                return false;
+            }
+        });
         login.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,9 +100,9 @@ public class Login extends Activity {
                         editor.commit();
 
                         if (rememberPass.isChecked()) {
-                            database.addCache(name,pass,1);  // 修改缓存的用户名
-                        } else{
-                            database.addCache(name,pass,0);
+                            database.addCache(name, pass, 1);  // 修改缓存的用户名
+                        } else {
+                            database.addCache(name, pass, 0);
                         }
 
                         Intent intentToMain = new Intent();
