@@ -39,8 +39,11 @@ public class Login extends Activity {
     private ProgressBar progressBar;
     private RelativeLayout relativeLayout;
 
+    private int runningFlag=0;
     private int mProgressStatus=0;
     private Handler mHandler;
+    private Thread thread;
+    private boolean isInterrupted=false;
 
     DBManager database;
 
@@ -82,18 +85,11 @@ public class Login extends Activity {
             @Override
             public void handleMessage(Message msg){
                 if(msg.what==0x111){
+                    runningFlag = 1;
+                    System.out.println(isInterrupted);
                     relativeLayout.setVisibility(View.VISIBLE);
                     //progressBar.setVisibility(View.VISIBLE);
                 }else{
-                    if (0 == username.getText().length()) {  // 判断用户名是否为空
-                        Toast toast = Toast.makeText(getApplicationContext(),
-                                "请输入用户名", Toast.LENGTH_SHORT);
-                        toast.show();
-                    } else if (0 == password.getText().length()) {  // 判断密码是否为空
-                        Toast toast = Toast.makeText(getApplicationContext(),
-                                "请输入密码", Toast.LENGTH_SHORT);
-                        toast.show();
-                    } else {
                         String name = username.getText().toString();  // 获取edittext里的用户名密码
                         String pass = password.getText().toString();
                         if (database.checkUser(name, pass)) {
@@ -114,11 +110,13 @@ public class Login extends Activity {
                             startActivity(intentToMain);
                             finish();
                         } else {
+                            relativeLayout.setVisibility(View.INVISIBLE);
+                            runningFlag = 0;
                             Toast toast = Toast.makeText(getApplicationContext(),
                                     "用户名或密码不正确", Toast.LENGTH_SHORT);
                             toast.show();
                         }
-                    }
+
                 }
             }
         };
@@ -142,35 +140,51 @@ public class Login extends Activity {
         login.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        while (true) {
-                            mProgressStatus = doWork();
-                            Message m = new Message();
-                            if (mProgressStatus < 100) {
-                                m.what = 0x111;
-                                mHandler.sendMessage(m);
-                            } else {
-                                m.what = 0x110;
-                                mHandler.sendMessage(m);
-                                break;
+                isInterrupted = false;
+                mProgressStatus = 0;
+                if (0 == username.getText().length()) {  // 判断用户名是否为空
+                    //relativeLayout.setVisibility(View.INVISIBLE);
+                    Toast toast = Toast.makeText(getApplicationContext(),
+                            "请输入用户名", Toast.LENGTH_SHORT);
+                    toast.show();
+                } else if (0 == password.getText().length()) {  // 判断密码是否为空
+                    //relativeLayout.setVisibility(View.INVISIBLE);
+                    Toast toast = Toast.makeText(getApplicationContext(),
+                            "请输入密码", Toast.LENGTH_SHORT);
+                    toast.show();
+                } else {
+                    thread =new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            while (!isInterrupted) {
+                                mProgressStatus = doWork();
+                                Message m = new Message();
+                                if (mProgressStatus < 100) {
+                                    m.what = 0x111;
+                                    mHandler.sendMessage(m);
+                                } else {
+                                    m.what = 0x110;
+                                    mHandler.sendMessage(m);
+                                    break;
+                                }
                             }
                         }
-                    }
 
-                    private int doWork() {
-                        mProgressStatus += 10;
-                        try {
-                            //progressBar.setVisibility(View.VISIBLE);
-                            Thread.sleep(100);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+                        private int doWork() {
+                            mProgressStatus += 10;
+                            try {
+                                //progressBar.setVisibility(View.VISIBLE);
+                                Thread.sleep(100);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            return mProgressStatus;
                         }
-                        return mProgressStatus;
+                    });
+                    thread.start();
                     }
-                }).start();
-            }
+                }
+
         });
 
         register.setOnClickListener(new OnClickListener() {
@@ -183,5 +197,20 @@ public class Login extends Activity {
         });
     }
 
-
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event){
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            if(1 == runningFlag){
+                relativeLayout.setVisibility(View.INVISIBLE);
+                isInterrupted=true;
+                System.out.println("test"+isInterrupted);
+                //thread.interrupt();
+                runningFlag = 0;
+            }
+            else{
+                finish();
+            }
+        }
+        return false;
+    }
 }
