@@ -26,7 +26,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                 "USER (_id INTEGER PRIMARY KEY AUTOINCREMENT, userName TEXT, password TEXT);");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS CACHE (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "userName TEXT, password TEXT, flag INTEGER);");
+                "userName TEXT, password TEXT, flag INTEGER, auto INTEGER);");
     }
 
     @Override

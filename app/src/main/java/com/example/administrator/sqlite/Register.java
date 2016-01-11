@@ -51,7 +51,7 @@ public class Register extends Activity {
                             User user = new User(tempName, tempPassword);
 
                             database.addUser(user);  // 向数据库添加新用户
-                            database.addCache(tempName,tempPassword,0);  // 修改缓存的用户名
+                            database.addCache(tempName,tempPassword,0,0);  // 修改缓存的用户名
 
                             SharedPreferences mySharedPreferences =
                                     getSharedPreferences("info", Activity.MODE_PRIVATE);  // 利用SharedPreferences保存当前用户id

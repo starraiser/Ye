@@ -38,6 +38,7 @@ public class Login extends Activity {
     private CheckBox rememberPass;
     private ProgressBar progressBar;
     private RelativeLayout relativeLayout;
+    private CheckBox autoLogin;
 
     private int runningFlag=0;
     private int mProgressStatus=0;
@@ -66,6 +67,7 @@ public class Login extends Activity {
         rememberPass = (CheckBox)findViewById(R.id.rememberPass);
         progressBar = (ProgressBar)findViewById(R.id.progressBar);
         relativeLayout = (RelativeLayout)findViewById(R.id.loginRelative);
+        autoLogin = (CheckBox)findViewById(R.id.autoLogin);
 
 
         BitmapFactory.Options options = new BitmapFactory.Options();  // 添加圆形头像
@@ -78,6 +80,7 @@ public class Login extends Activity {
 
         relativeLayout.setVisibility(View.INVISIBLE);
         //progressBar.setVisibility(View.INVISIBLE);
+
         String cacheName = database.getCacheName();
         username.setText(cacheName);
 
@@ -86,7 +89,6 @@ public class Login extends Activity {
             public void handleMessage(Message msg){
                 if(msg.what==0x111){
                     runningFlag = 1;
-                    System.out.println(isInterrupted);
                     //relativeLayout.setVisibility(View.VISIBLE);
                     //progressBar.setVisibility(View.VISIBLE);
                 }else{
@@ -99,10 +101,14 @@ public class Login extends Activity {
                             editor.putInt("userId", database.getIdByName(name));
                             editor.commit();
 
+                            int auto=0;
+                            if(autoLogin.isChecked()){
+                                auto=1;
+                            }
                             if (rememberPass.isChecked()) {
-                                database.addCache(name, pass, 1);  // 修改缓存的用户名
+                                database.addCache(name, pass, 1,auto);  // 修改缓存的用户名
                             } else {
-                                database.addCache(name, pass, 0);
+                                database.addCache(name, pass, 0,auto);
                             }
 
                             Intent intentToMain = new Intent();
@@ -131,7 +137,7 @@ public class Login extends Activity {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE ||
                         (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
-                    login.performClick();
+                    System.out.println(login.performClick());
                     return true;
                 }
                 return false;
@@ -140,6 +146,7 @@ public class Login extends Activity {
         login.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                System.out.println("perform");
                 isInterrupted = false;
                 mProgressStatus = 0;
                 if (0 == username.getText().length()) {  // 判断用户名是否为空
@@ -154,7 +161,7 @@ public class Login extends Activity {
                     toast.show();
                 } else {
                     relativeLayout.setVisibility(View.VISIBLE);
-                    thread =new Thread(new Runnable() {
+                    thread = new Thread(new Runnable() {
                         @Override
                         public void run() {
                             while (!isInterrupted) {
@@ -183,8 +190,8 @@ public class Login extends Activity {
                         }
                     });
                     thread.start();
-                    }
                 }
+            }
 
         });
 
@@ -196,6 +203,20 @@ public class Login extends Activity {
                 startActivity(intentToReg);
             }
         });
+
+        autoLogin.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(autoLogin.isChecked()) {
+                    rememberPass.setChecked(true);
+                }
+            }
+        });
+
+        if(1 == database.getAuto()){  // 自动登录
+            autoLogin.setChecked(true);
+            login.performClick();
+        }
     }
 
     @Override
@@ -204,7 +225,6 @@ public class Login extends Activity {
             if(1 == runningFlag){
                 relativeLayout.setVisibility(View.INVISIBLE);
                 isInterrupted=true;
-                System.out.println("test"+isInterrupted);
                 //thread.interrupt();
                 runningFlag = 0;
             }

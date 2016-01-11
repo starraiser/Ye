@@ -25,16 +25,16 @@ public class DBManager {
         db = helper.getWritableDatabase();
     }
 
-    public void addCache(String name, String password, int flag){  // 添加或更新记住用户名的缓存
+    public void addCache(String name, String password, int flag, int auto){  // 添加或更新记住用户名的缓存
         ContentValues cv = new ContentValues();
         Cursor cursor = db.rawQuery("select _id from CACHE",null);
         if(0 == cursor.getCount()){
-            db.execSQL("insert into CACHE values(null,?,?,?)",
-                    new String[]{name,password,Integer.toString(flag)});
+            db.execSQL("insert into CACHE values(null,?,?,?,?)",
+                    new String[]{name,password,Integer.toString(flag), Integer.toString(auto)});
         }
         else{
-            db.execSQL("update CACHE set userName=? ,password=?,flag=? where _id=1",
-                    new String[]{name,password,Integer.toString(flag)});
+            db.execSQL("update CACHE set userName=? ,password=?,flag=?,auto=? where _id=1",
+                    new String[]{name,password,Integer.toString(flag), Integer.toString(auto)});
         }
     }
 
@@ -69,6 +69,17 @@ public class DBManager {
 
         while(cursor.moveToNext()){
             flag = cursor.getInt(cursor.getColumnIndex("flag"));
+        }
+        return flag;
+    }
+
+    public int getAuto(){
+        int flag = 0;
+        ContentValues cv = new ContentValues();
+        Cursor cursor = db.rawQuery("select auto from CACHE where _id=?",new String[]{Integer.toString(1)});
+
+        while(cursor.moveToNext()){
+            flag = cursor.getInt(cursor.getColumnIndex("auto"));
         }
         return flag;
     }
