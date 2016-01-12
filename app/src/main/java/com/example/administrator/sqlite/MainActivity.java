@@ -99,7 +99,7 @@ public class MainActivity extends Activity {
             }
         });
 
-        final SlidingMenu menu = new SlidingMenu(this);
+        final SlidingMenu menu = new SlidingMenu(this);  // 侧滑菜单
         menu.setMode(SlidingMenu.LEFT);
         menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
         menu.setFadeDegree(0.35f);
@@ -119,7 +119,7 @@ public class MainActivity extends Activity {
                 Drawable avatarDrawable2 = avatarDrawableFactory2.getRoundedAvatarDrawable(bitmap2);
                 slidingAvatar.setImageDrawable(avatarDrawable2);
 
-                ListView listView = (ListView) findViewById(R.id.slidingList);
+                ListView listView = (ListView) findViewById(R.id.slidingList);  // 侧滑菜单里的列表
                 SimpleAdapter adapter = new SimpleAdapter(MainActivity.this,
                         getData2(), R.layout.slidinglist,
                         new String[]{"string"}, new int[]{R.id.func});
@@ -130,10 +130,10 @@ public class MainActivity extends Activity {
                     public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                         int num = arg2;
                         if(num==0){
-                            ActivityTaskManager.getInstance().closeAllActivity();
-                            Intent intent = new Intent();
-                            intent.setClass(MainActivity.this,Login.class);
-                            startActivity(intent);
+                            ActivityTaskManager.getInstance().closeAllActivityExceptOne("Login");  // 退出到登录页面
+                            //Intent intent = new Intent();
+                            //intent.setClass(MainActivity.this,Login.class);
+                            //startActivity(intent);
                         }
                     }
                 });
@@ -145,7 +145,7 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 menu.showMenu();
             }
-        });
+        });  // 设置打开侧滑菜单的监听器
     }
 
     private List<Map<String ,Object>> getData(){  // 获取数据库记录
@@ -163,7 +163,7 @@ public class MainActivity extends Activity {
         return list;
     }
 
-    private List<Map<String ,String>> getData2(){  // 获取数据库记录
+    private List<Map<String ,String>> getData2(){  // 获取侧滑菜单内容
         List<Map<String,String>> list = new ArrayList<Map<String,String>>();
         for (int i = 0; i < 1; i++){
             Map<String,String> map = new HashMap<String,String>();
@@ -172,6 +172,7 @@ public class MainActivity extends Activity {
         }
         return list;
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
@@ -197,7 +198,7 @@ public class MainActivity extends Activity {
     }
 
     @Override
-    public boolean onKeyDown(int KeyCode, KeyEvent event){
+    public boolean onKeyDown(int KeyCode, KeyEvent event){  // 监听返回键
         if(KeyCode == KeyEvent.KEYCODE_BACK){
 
             Dialog alertDialog = new AlertDialog.Builder(this).
