@@ -48,8 +48,8 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        SysApplication.getInstance().addActivity(this);
-        Login.temp.finish();  // finish登录页，否则返回键会返回到登录页
+        ActivityTaskManager.getInstance().putActivity("Main", this);
+        //Login.temp.finish();  // finish登录页，否则返回键会返回到登录页
 
         database = new DBManager(this);
 
@@ -124,6 +124,19 @@ public class MainActivity extends Activity {
                         getData2(), R.layout.slidinglist,
                         new String[]{"string"}, new int[]{R.id.func});
                 listView.setAdapter(adapter);
+
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {  // 列表监听器
+                    @Override
+                    public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                        int num = arg2;
+                        if(num==0){
+                            ActivityTaskManager.getInstance().closeAllActivity();
+                            Intent intent = new Intent();
+                            intent.setClass(MainActivity.this,Login.class);
+                            startActivity(intent);
+                        }
+                    }
+                });
             }
         });
 
@@ -152,7 +165,7 @@ public class MainActivity extends Activity {
 
     private List<Map<String ,String>> getData2(){  // 获取数据库记录
         List<Map<String,String>> list = new ArrayList<Map<String,String>>();
-        for (int i = 0; i < 5; i++){
+        for (int i = 0; i < 1; i++){
             Map<String,String> map = new HashMap<String,String>();
             map.put("string","退出");
             list.add(map);
@@ -195,7 +208,7 @@ public class MainActivity extends Activity {
                         public void onClick(DialogInterface dialog, int which) {
 
                             finish();
-                            //SysApplication.getInstance().exit();  // 使用控制类完全退出程序
+                            ActivityTaskManager.getInstance().closeAllActivity();  // 使用控制类完全退出程序
                         }
                     })
                     .setNegativeButton("取消", new DialogInterface.OnClickListener() {

@@ -10,8 +10,7 @@
             android:id="@+id/slidingAvatar"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:layout_centerInParent="true"
-            android:src="@drawable/mumu"/>
+            android:layout_centerInParent="true" />
     </RelativeLayout>
     <RelativeLayout
         android:layout_width="match_parent"

@@ -23,7 +23,7 @@ public class completePic extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_complete_pic);
-        SysApplication.getInstance().addActivity(this);
+        ActivityTaskManager.getInstance().putActivity("CompletePic", this);
 
         completePic = (PhotoView)findViewById(R.id.completePic);
 

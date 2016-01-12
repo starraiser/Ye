@@ -54,7 +54,7 @@ public class Login extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        SysApplication.getInstance().addActivity(this);
+        ActivityTaskManager.getInstance().putActivity("Login", this);
 
         temp=this;
         database=new DBManager(this);
@@ -114,7 +114,8 @@ public class Login extends Activity {
                             Intent intentToMain = new Intent();
                             intentToMain.setClass(Login.this, MainActivity.class);
                             startActivity(intentToMain);
-                            finish();
+                            relativeLayout.setVisibility(View.INVISIBLE);
+                            //finish();
                         } else {
                             relativeLayout.setVisibility(View.INVISIBLE);
                             runningFlag = 0;
