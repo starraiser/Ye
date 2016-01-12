@@ -25,7 +25,7 @@ import android.widget.SimpleAdapter;
 import com.example.administrator.sqlite.database.DBManager;
 import com.example.administrator.sqlite.entity.Item;
 import com.tandong.sa.avatars.AvatarDrawableFactory;
-
+import com.slidingmenu.lib.SlidingMenu;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +39,7 @@ public class MainActivity extends Activity {
     private ListView listView;
     private Button newItem;
     private ImageView avatar;
+    private ImageView slidingAvatar;
 
     private List<Item> listData;  // 数据
     private SimpleAdapter adapter;  // 适配器
@@ -58,6 +59,7 @@ public class MainActivity extends Activity {
         listView = (ListView)findViewById(R.id.list);
         newItem = (Button)findViewById(R.id.newItem);
         avatar = (ImageView)findViewById(R.id.mainAvatar);
+        //slidingAvatar = (ImageView)findViewById(R.id.slidingAvatar);
 
         BitmapFactory.Options options = new BitmapFactory.Options();  // 添加圆形头像
         options.inMutable = false;
@@ -75,11 +77,11 @@ public class MainActivity extends Activity {
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                 int id = database.getListOfUser(userId).get(arg2).getId();  // 获取点击列表中的数据的id
 
-                Intent intent = new Intent(MainActivity.this,showRecord.class);
+                Intent intent = new Intent(MainActivity.this, showRecord.class);
                 Bundle bundle = new Bundle();
-                bundle.putInt("id",id);  // 传递id到显示页面
+                bundle.putInt("id", id);  // 传递id到显示页面
                 intent.putExtras(bundle);
-                startActivityForResult(intent,1);
+                startActivityForResult(intent, 1);
             }
         });
 
@@ -89,11 +91,46 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
-                intent.setClass(MainActivity.this,Edit.class);
+                intent.setClass(MainActivity.this, Edit.class);
                 Bundle bundleToEdit = new Bundle();
-                bundleToEdit.putInt("flag",0);  // 传递flag到编辑页面以判定是从此页面跳转到编辑页面
+                bundleToEdit.putInt("flag", 0);  // 传递flag到编辑页面以判定是从此页面跳转到编辑页面
                 intent.putExtras(bundleToEdit);
-                startActivityForResult(intent,1);
+                startActivityForResult(intent, 1);
+            }
+        });
+
+        final SlidingMenu menu = new SlidingMenu(this);
+        menu.setMode(SlidingMenu.LEFT);
+        menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+        menu.setFadeDegree(0.35f);
+        menu.setBehindWidth(300);
+        menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+        menu.setMenu(R.layout.sliding);
+
+        menu.setOnOpenedListener(new SlidingMenu.OnOpenedListener() {
+            @Override
+            public void onOpened() {
+                BitmapFactory.Options options2 = new BitmapFactory.Options();  // 添加圆形头像
+                options2.inMutable = false;
+                options2.inSampleSize = 4;
+                slidingAvatar = (ImageView) findViewById(R.id.slidingAvatar);
+                AvatarDrawableFactory avatarDrawableFactory2 = new AvatarDrawableFactory(getResources(), MainActivity.this);
+                Bitmap bitmap2 = BitmapFactory.decodeResource(getResources(), R.drawable.mumu, options2);
+                Drawable avatarDrawable2 = avatarDrawableFactory2.getRoundedAvatarDrawable(bitmap2);
+                slidingAvatar.setImageDrawable(avatarDrawable2);
+
+                ListView listView = (ListView) findViewById(R.id.slidingList);
+                SimpleAdapter adapter = new SimpleAdapter(MainActivity.this,
+                        getData2(), R.layout.slidinglist,
+                        new String[]{"string"}, new int[]{R.id.func});
+                listView.setAdapter(adapter);
+            }
+        });
+
+        avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                menu.showMenu();
             }
         });
     }
@@ -113,6 +150,15 @@ public class MainActivity extends Activity {
         return list;
     }
 
+    private List<Map<String ,String>> getData2(){  // 获取数据库记录
+        List<Map<String,String>> list = new ArrayList<Map<String,String>>();
+        for (int i = 0; i < 5; i++){
+            Map<String,String> map = new HashMap<String,String>();
+            map.put("string","退出");
+            list.add(map);
+        }
+        return list;
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);

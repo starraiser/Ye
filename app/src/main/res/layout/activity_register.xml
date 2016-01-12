@@ -49,6 +49,7 @@
             android:background="@color/white_gray"/>
         <EditText
             android:id="@+id/passwordRegAgain"
+            android:imeOptions="actionDone"
             android:background="#FFFFFF"
             android:singleLine="true"
             android:inputType="textPassword"
