@@ -63,7 +63,7 @@ public class MainActivity extends Activity {
 
         BitmapFactory.Options options = new BitmapFactory.Options();  // 添加圆形头像
         options.inMutable = false;
-        options.inSampleSize=4;
+        options.inSampleSize=4;  // 缩小图片为原来的1/4
         AvatarDrawableFactory avatarDrawableFactory = new AvatarDrawableFactory(getResources(),this);
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.mumu, options);
         Drawable avatarDrawable = avatarDrawableFactory.getRoundedAvatarDrawable(bitmap);
@@ -103,11 +103,11 @@ public class MainActivity extends Activity {
         menu.setMode(SlidingMenu.LEFT);
         menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
         menu.setFadeDegree(0.35f);
-        menu.setBehindWidth(300);
+        menu.setBehindWidth(600);
         menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
         menu.setMenu(R.layout.sliding);
 
-        menu.setOnOpenedListener(new SlidingMenu.OnOpenedListener() {
+        menu.setOnOpenedListener(new SlidingMenu.OnOpenedListener() {  // 打开侧滑菜单监听
             @Override
             public void onOpened() {
                 BitmapFactory.Options options2 = new BitmapFactory.Options();  // 添加圆形头像
@@ -128,12 +128,12 @@ public class MainActivity extends Activity {
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {  // 列表监听器
                     @Override
                     public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                        int num = arg2;
-                        if(num==0){
-                            ActivityTaskManager.getInstance().closeAllActivityExceptOne("Login");  // 退出到登录页面
-                            //Intent intent = new Intent();
-                            //intent.setClass(MainActivity.this,Login.class);
-                            //startActivity(intent);
+                        switch (arg2){
+                            case 0:
+                                ActivityTaskManager.getInstance().closeAllActivityExceptOne("Login");  // 退出到登录页面
+                                break;
+                            default:
+                                break;
                         }
                     }
                 });
