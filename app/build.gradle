@@ -17,12 +17,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    android.applicationVariants.all{variant->
-        variant.outputs.each{output->
+    android.applicationVariants.all { variant ->
+        variant.outputs.each { output ->
             def outputFile = output.outputFile
-            if (outputFile!=null && outputFile.name.endsWith('.apk')){
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
                 def fileName = "爱你.apk"
-                output.outputFile=new File(outputFile.parent,fileName)
+                output.outputFile = new File(outputFile.parent, fileName)
             }
         }
     }
@@ -31,9 +31,10 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.1.1'
-    compile 'com.android.support:design:23.1.1'
     compile files('lib/classes.jar')
     compile files('lib/SmartAndroid2.0.jar')
     compile files('lib/slidingmenu.jar')
+    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.android.support:design:23.1.1'
+    compile 'com.android.support:support-v4:23.1.1'
 }
