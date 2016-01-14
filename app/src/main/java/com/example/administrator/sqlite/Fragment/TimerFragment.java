@@ -11,13 +11,10 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
-import com.example.administrator.sqlite.MainActivity;
 import com.example.administrator.sqlite.R;
 import com.example.administrator.sqlite.database.DBManager;
-import com.example.administrator.sqlite.entity.Item;
 import com.example.administrator.sqlite.entity.Timer;
-import com.example.administrator.sqlite.showRecord;
-import com.example.administrator.sqlite.showTimer;
+import com.example.administrator.sqlite.Activity.Timer.showTimer;
 
 import java.util.ArrayList;
 import java.util.HashMap;

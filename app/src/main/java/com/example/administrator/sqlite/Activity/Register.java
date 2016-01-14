@@ -1,4 +1,4 @@
-package com.example.administrator.sqlite;
+package com.example.administrator.sqlite.Activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,6 +11,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.administrator.sqlite.ActivityManager.ActivityTaskManager;
+import com.example.administrator.sqlite.R;
 import com.example.administrator.sqlite.database.DBManager;
 import com.example.administrator.sqlite.entity.User;
 

@@ -1,7 +1,7 @@
 /**
  * 查看记录页面
  */
-package com.example.administrator.sqlite;
+package com.example.administrator.sqlite.Activity.Record;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,6 +11,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.administrator.sqlite.ActivityManager.ActivityTaskManager;
+import com.example.administrator.sqlite.R;
+import com.example.administrator.sqlite.Activity.completePic;
 import com.example.administrator.sqlite.database.DBManager;
 import com.example.administrator.sqlite.entity.Item;
 import com.tandong.sa.zUImageLoader.core.ImageLoader;

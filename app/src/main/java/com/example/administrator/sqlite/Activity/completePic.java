@@ -1,13 +1,15 @@
 /**
  * 查看大图
  */
-package com.example.administrator.sqlite;
+package com.example.administrator.sqlite.Activity;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 
+import com.example.administrator.sqlite.ActivityManager.ActivityTaskManager;
+import com.example.administrator.sqlite.R;
 import com.tandong.sa.zUImageLoader.core.ImageLoader;
 import com.tandong.sa.zUImageLoader.core.ImageLoaderConfiguration;
 

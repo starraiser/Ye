@@ -2,7 +2,7 @@
  * 编辑页面
  */
 
-package com.example.administrator.sqlite;
+package com.example.administrator.sqlite.Activity.Record;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -12,17 +12,12 @@ import android.content.res.AssetFileDescriptor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
-import android.view.ContextMenu;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -34,7 +29,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import com.example.administrator.sqlite.ActivityManager.ActivityTaskManager;
 import com.example.administrator.sqlite.Adapter.BVAdapter;
+import com.example.administrator.sqlite.R;
+import com.example.administrator.sqlite.Activity.completePic;
 import com.example.administrator.sqlite.database.DBManager;
 import com.example.administrator.sqlite.entity.Item;
 import com.tandong.sa.bv.BottomView;

@@ -1,4 +1,4 @@
-package com.example.administrator.sqlite;
+package com.example.administrator.sqlite.ActivityManager;
 
 import android.app.Activity;
 

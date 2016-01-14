@@ -1,4 +1,7 @@
-package com.example.administrator.sqlite;
+/**
+ * 显示Timer记录
+ */
+package com.example.administrator.sqlite.Activity.Timer;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,8 +11,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.administrator.sqlite.ActivityManager.ActivityTaskManager;
+import com.example.administrator.sqlite.R;
+import com.example.administrator.sqlite.Activity.completePic;
 import com.example.administrator.sqlite.database.DBManager;
-import com.example.administrator.sqlite.entity.Item;
 import com.example.administrator.sqlite.entity.Timer;
 import com.tandong.sa.zUImageLoader.core.ImageLoader;
 import com.tandong.sa.zUImageLoader.core.ImageLoaderConfiguration;
@@ -39,6 +44,8 @@ public class showTimer extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timer);
+
+        ActivityTaskManager.getInstance().putActivity("showTimer", this);
 
         database=new DBManager(this);
 

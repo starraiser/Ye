@@ -1,4 +1,7 @@
-package com.example.administrator.sqlite;
+/**
+ * 编辑Timer记录
+ */
+package com.example.administrator.sqlite.Activity.Timer;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -16,9 +19,10 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.administrator.sqlite.ActivityManager.ActivityTaskManager;
 import com.example.administrator.sqlite.Adapter.BVAdapter;
+import com.example.administrator.sqlite.R;
 import com.example.administrator.sqlite.database.DBManager;
-import com.example.administrator.sqlite.entity.Item;
 import com.example.administrator.sqlite.entity.Timer;
 import com.tandong.sa.bv.BottomView;
 import com.tandong.sa.zUImageLoader.core.ImageLoader;
@@ -30,8 +34,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -39,29 +41,27 @@ import java.util.Date;
 
 public class editTimer extends Activity {
 
-    private DBManager database;
+    private DBManager database;  // 数据库管理
 
-    final private int NEW_ITEM = 0;
+    final private int NEW_ITEM = 0;  // 判断是新建记录还是更新记录
     final private int UPDATE_ITEM = 1;
 
 
-    private TextView title;
-    private TextView content;
-    private Button confirmTimer;
-    private Button takePhoto;
-    private ImageView photo;
+    private TextView title;  // 标题
+    private TextView content;  // 正文
+    private Button confirmTimer;  // 确认按钮
+    private Button takePhoto;  // 拍照按钮
+    private ImageView photo;  // 显示图片
+    private BottomView bottomView;  // 选择拍照/选择照片菜单
+    private DatePicker datePicker;  // 时间拾取器
 
-    private BottomView bottomView;
-
-    private DatePicker datePicker;
-    private String curTime;
-    private int targetYear;
-    private int targetMonth;
-    private int targetDay;
-    private String targetTime = "";
-    private String tempTime="";
-    private String savePath = "mnt/sdcard/Ye/";
-    private String photoPath;
+    private String curTime;  // 当前时间
+    private int targetYear;  // 目标时间 - 年
+    private int targetMonth;  // 目标时间 - 月
+    private int targetDay;  // 目标时间 - 日
+    private String targetTime = "";  // 目标时间 - 年月日
+    private String savePath = "mnt/sdcard/Ye/";  // 文件夹路径
+    private String photoPath;  // 文件全名（带路径）
 
     private int userId;
     private int id;
@@ -72,6 +72,7 @@ public class editTimer extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_timer);
 
+        ActivityTaskManager.getInstance().putActivity("editTimer", this);
         database = new DBManager(this);
 
         title = (TextView)findViewById(R.id.editTimerTitle);
@@ -85,31 +86,32 @@ public class editTimer extends Activity {
         userId = sharedPreferences.getInt("userId",-1);
 
         try {
-            Intent intent = getIntent();
+            Intent intent = getIntent();  // 获取上一个activity传递的值
             Bundle bundle = intent.getExtras();
             flag = bundle.getInt("flag");
             id = bundle.getInt("id");
             System.out.println(flag);
             if (UPDATE_ITEM == flag) {  // 判断是修改记录还是新建记录
-                init(id);
+                init(id);  // 初始化页面内容
             }
         }catch (Exception e){
             e.printStackTrace();
         }
 
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  // 获取当前时间
         Date curDate = new Date(System.currentTimeMillis());
         curTime = formatter.format(curDate);
 
-        SimpleDateFormat formatter2 = new SimpleDateFormat("yyyy-MM-dd");
-        Date tempDate = new Date(System.currentTimeMillis());
-        tempTime = formatter2.format(curDate);
+        //SimpleDateFormat formatter2 = new SimpleDateFormat("yyyy-MM-dd");
+        //Date tempDate = new Date(System.currentTimeMillis());
+        //tempTime = formatter2.format(curDate);
 
         Calendar calendar=Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int monthOfYear = calendar.get(Calendar.MONTH);
         int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
 
+        /*
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         Date d1,d2;
         d1=new Date();
@@ -120,39 +122,41 @@ public class editTimer extends Activity {
         }catch (ParseException e){
             e.printStackTrace();
         }
-        //long time = (d2.getTime()-d1.getTime())/(1000*60*60*24);
+        long time = (d2.getTime()-d1.getTime())/(1000*60*60*24);
+        */
 
-        //content.setText(Long.toString(time));
         datePicker.init(year, monthOfYear, dayOfMonth, new DatePicker.OnDateChangedListener() {
             @Override
-            public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                targetYear = year;
-                targetMonth = monthOfYear+1;
+            public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {  // 时间拾取器监听
+                targetYear = year;  // 修改年月日
+                targetMonth = monthOfYear+1;  // 月份范围为0-11，故真实月份要+1
                 targetDay = dayOfMonth;
             }
         });
 
-        confirmTimer.setOnClickListener(new View.OnClickListener() {
+        confirmTimer.setOnClickListener(new View.OnClickListener() {  // 确认按钮监听
             @Override
             public void onClick(View v) {
-                targetTime="";
+
+                targetTime = "";  // 初始化目标时间
                 targetTime += Integer.toString(targetYear);
-                if(targetMonth<10){
-                    targetTime +="0"+Integer.toString(targetMonth);
-                } else{
-                    targetTime +=Integer.toString(targetMonth);
+                if (targetMonth < 10) {  // 月若是个位数则补零
+                    targetTime += "0" + Integer.toString(targetMonth);
+                } else {
+                    targetTime += Integer.toString(targetMonth);
                 }
-                if(targetDay<10){
-                    targetTime +="0"+Integer.toString(targetDay);
-                } else{
-                    targetTime +=Integer.toString(targetDay);
+                if (targetDay < 10) {  // 日若是个位数则补零
+                    targetTime += "0" + Integer.toString(targetDay);
+                } else {
+                    targetTime += Integer.toString(targetDay);
                 }
-                if(targetTime.equals("00000")){
+
+                if (targetTime.equals("00000")) {  // 时间拾取器改变，即设置时间为当天时错误
                     AlertDialog noContent = new AlertDialog.Builder(editTimer.this).create();
                     noContent.setTitle("提示");
-                    noContent.setMessage("时间错误！");
+                    noContent.setMessage("不能选择当天！");
                     noContent.show();
-                }else {
+                } else {
                     if (0 == content.length()) {  // 没有正文
                         AlertDialog noContent = new AlertDialog.Builder(editTimer.this).create();
                         noContent.setTitle("提示");
@@ -162,9 +166,9 @@ public class editTimer extends Activity {
                         String tempTitle;
                         String tempContent = content.getText().toString();
 
-                        if (content.length() > 10) {
+                        if (content.length() > 10) {  // 正文长度大于10，取前10个字符
                             tempTitle = tempContent.substring(0, 10);
-                        } else {
+                        } else {  // 正文长度小于10，全取
                             tempTitle = tempContent.substring(0, content.length());
                         }
 
@@ -178,7 +182,8 @@ public class editTimer extends Activity {
 
                         Intent intent = new Intent();
                         setResult(RESULT_OK, intent);
-                        finish();
+                        finish();  // 结束，返回主页面
+
                     } else {  // 题目和正文都有
                         String tempTitle = title.getText().toString();
                         String tempContent = content.getText().toString();
@@ -193,7 +198,8 @@ public class editTimer extends Activity {
 
                         Intent intent = new Intent();
                         setResult(RESULT_OK, intent);
-                        finish();
+                        finish();  // 结束，返回主页面
+
                     }
                 }
             }
@@ -203,44 +209,45 @@ public class editTimer extends Activity {
             @Override
             public void onClick(View v) {
 
-                ListView choiceList;
+                ListView choiceList;  // 初始化选择菜单
                 final ArrayList<String> menus = new ArrayList<String>();
                 menus.add("拍摄照片");
                 menus.add("从文件中选择");
 
-                bottomView = new BottomView(editTimer.this,R.style.BottomViewTheme_Defalut,R.layout.bottom_view);
+                bottomView = new BottomView(editTimer.this, R.style.BottomViewTheme_Defalut, R.layout.bottom_view);
                 bottomView.setAnimation(R.style.BottomToTopAnim);
-                bottomView.showBottomView(true);
+                bottomView.showBottomView(true);  // 显示菜单
 
-                choiceList = (ListView)bottomView.getView().findViewById(R.id.lv_list);
-                BVAdapter adapter = new BVAdapter(editTimer.this,menus);
+                choiceList = (ListView) bottomView.getView().findViewById(R.id.lv_list);
+                BVAdapter adapter = new BVAdapter(editTimer.this, menus);  // 设置适配器
                 choiceList.setAdapter(adapter);
 
                 choiceList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                         String s_menu = menus.get(arg2);
-                        if (s_menu.contains("拍摄照片")) {
-                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        if (s_menu.contains("拍摄照片")) {  // 拍照
+                            //Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);  // 打开系统相机
 
-                            File file = new File(savePath);
+                            File file = new File(savePath);  // 建立图片保存路径
                             if (!file.exists()) {
                                 file.mkdir();
                             }
 
-                            photoPath=savePath + dateToNum(curTime) + ".jpg";
+                            photoPath = savePath + dateToNum(curTime) + ".jpg";  //保存图片
                             File photo = new File(photoPath);
 
-                            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
+                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);  // 打开系统相机
+                            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));  // 打开系统相机
                             startActivityForResult(intent, 1);
-                        } else if (s_menu.contains("从文件中选择")) {
+
+                        } else if (s_menu.contains("从文件中选择")) {  // 选择照片
                             Intent intent = new Intent();
                             intent.setType("image/*");
                             intent.setAction(Intent.ACTION_GET_CONTENT);
-                            startActivityForResult(intent,2);
+                            startActivityForResult(intent, 2);
                         }
-                        bottomView.dismissBottomView();
-
+                        bottomView.dismissBottomView();  // 隐藏菜单
                     }
                 });
             }
@@ -254,24 +261,7 @@ public class editTimer extends Activity {
         if(RESULT_CANCELED == resultCode){
             return;
         }
-        if(1==requestCode){
-            /*
-                FileInputStream file = new FileInputStream(photoPath);
-                BitmapFactory.Options opts = new BitmapFactory.Options();
-                //为位图设置100K的缓存
-                opts.inTempStorage = new byte[100 * 1024];
-                //设置位图颜色显示优化方式
-                opts.inPreferredConfig = Bitmap.Config.RGB_565;
-                //设置图片可以被回收
-                opts.inPurgeable = true;
-                //设置位图缩放比例
-                opts.inSampleSize = 4;
-                //设置解码位图的尺寸信息
-                opts.inInputShareable = true;
-                //解码位图
-                System.out.println();
-                Bitmap bitmap1 = BitmapFactory.decodeStream(file, null, opts);
-                photo.setImageBitmap(bitmap1);*/
+        if(1 == requestCode){
             ImageLoaderConfiguration config =
                     ImageLoaderConfiguration.createDefault(getApplicationContext());  // 配置
             ImageLoader.getInstance().init(config);  // 初始化
@@ -281,17 +271,18 @@ public class editTimer extends Activity {
             Uri uri = data.getData();
             AssetFileDescriptor afd;
             try{
-                afd = getContentResolver().openAssetFileDescriptor(uri,"r");
+                afd = getContentResolver().openAssetFileDescriptor(uri,"r");  // 保存选择的图片
                 byte[] buffer = new byte[16*1024];
                 FileInputStream fis = afd.createInputStream();
                 photoPath=savePath + dateToNum(curTime) + ".jpg";
                 FileOutputStream fos = new FileOutputStream(new File(photoPath));
                 ByteArrayOutputStream temp_byte = new ByteArrayOutputStream();
                 int size;
-                while((size=fis.read(buffer))!=-1){
+                while((size = fis.read(buffer)) != -1){
                     fos.write(buffer,0,size);
                     temp_byte.write(buffer,0,size);
                 }
+
                 ImageLoaderConfiguration config =
                         ImageLoaderConfiguration.createDefault(getApplicationContext());  // 配置
                 ImageLoader.getInstance().init(config);  // 初始化
@@ -301,17 +292,17 @@ public class editTimer extends Activity {
             }catch (IOException e){
                 e.printStackTrace();
             }
-            System.out.println(uri);
         }
     }
 
     public void init(int id){  // 初始化页面
-        Timer timer = database.queryTimer(id);
-        title.setText(timer.getTitle());
-        content.setText(timer.getContent());
-        String photoStr = timer.getPhotoPath();
+        Timer timer = database.queryTimer(id);  // 获取Timer实例
+        title.setText(timer.getTitle());  // 初始化标题
+        content.setText(timer.getContent());  // 初始化正文
+        String photoStr = timer.getPhotoPath();  // 获取图片路径
         photoPath = photoStr;
 
+        /*
         String tmpTime = timer.getTimerTime();
         String tmpY=tmpTime.substring(0, 4);
         String tmpM=tmpTime.substring(4, 6);
@@ -319,7 +310,7 @@ public class editTimer extends Activity {
         int Y = Integer.parseInt(tmpY);
         int M = Integer.parseInt(tmpM);
         int D = Integer.parseInt(tmpD);
-        /*
+
         System.out.println(tmpY + tmpM + tmpD);
         datePicker.init(Y, M, D, new DatePicker.OnDateChangedListener() {
             @Override
@@ -329,26 +320,7 @@ public class editTimer extends Activity {
                 targetDay = dayOfMonth;
             }
         });*/
-        if(photoStr!=null) {
-            /*
-                FileInputStream file = new FileInputStream(photoStr);
-                BitmapFactory.Options opts = new BitmapFactory.Options();
-                //为位图设置100K的缓存
-                opts.inTempStorage = new byte[100 * 1024];
-                //设置位图颜色显示优化方式
-                opts.inPreferredConfig = Bitmap.Config.RGB_565;
-                //设置图片可以被回收
-                opts.inPurgeable = true;
-                //设置位图缩放比例
-                opts.inSampleSize = 4;
-                //设置解码位图的尺寸信息
-                opts.inInputShareable = true;
-                //解码位图
-
-                Bitmap bitmap1 = BitmapFactory.decodeStream(file, null, opts);
-
-                photo.setImageBitmap(bitmap1);*/
-
+        if(photoStr != null) {
             ImageLoaderConfiguration config =
                     ImageLoaderConfiguration.createDefault(getApplicationContext());  //配置
             ImageLoader.getInstance().init(config);  // 初始化
@@ -357,10 +329,10 @@ public class editTimer extends Activity {
     }
 
     public String dateToNum(String date){  // 提取时间中的数字作为文件名
-        String num="";
-        for(int i=0;i<date.length();i++){
-            if(date.charAt(i)>='0'&&date.charAt(i)<='9'){
-                num+=date.charAt(i);
+        String num = "";
+        for(int i = 0;i < date.length();i++){
+            if(date.charAt(i) >= '0' && date.charAt(i) <= '9'){
+                num += date.charAt(i);
             }
         }
         return num;

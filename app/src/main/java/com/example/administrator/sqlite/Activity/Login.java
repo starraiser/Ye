@@ -1,4 +1,4 @@
-package com.example.administrator.sqlite;
+package com.example.administrator.sqlite.Activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,7 +11,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -22,10 +21,10 @@ import android.widget.TextView;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
 
+import com.example.administrator.sqlite.ActivityManager.ActivityTaskManager;
+import com.example.administrator.sqlite.R;
 import com.example.administrator.sqlite.database.DBManager;
 import com.tandong.sa.avatars.AvatarDrawableFactory;
-
-import java.util.logging.LogRecord;
 
 
 public class Login extends Activity {
