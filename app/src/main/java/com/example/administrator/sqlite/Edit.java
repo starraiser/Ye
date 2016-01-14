@@ -186,11 +186,9 @@ public class Edit extends Activity {
                     }
 
                     if (NEW_ITEM == flag) {  // 新建记录
-                        System.out.println("ttttttttttttttttttttttttttttttttt");
                         Item item = new Item(userId, time, tempTitle, tempContent, photoPath);
                         database.addwithPic(item);
                     } else {  // 更新记录
-                        System.out.println("rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
                         Item item = new Item(id, userId, time, tempTitle, tempContent, photoPath);
                         database.update(item);
                     }

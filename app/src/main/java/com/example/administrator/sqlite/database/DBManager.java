@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.example.administrator.sqlite.entity.Timer;
 import com.example.administrator.sqlite.entity.User;
 import com.example.administrator.sqlite.entity.Item;
 
@@ -18,72 +19,18 @@ public class DBManager {
 
     private DBOpenHelper helper;
     private SQLiteDatabase db;
-    private ArrayList<Item> list;
+    private ArrayList<Item> itemList;
+    private ArrayList<Timer> timerList;
 
     public DBManager(Context context){
         helper = new DBOpenHelper(context);
         db = helper.getWritableDatabase();
     }
 
-    public void addCache(String name, String password, int flag, int auto){  // 添加或更新记住用户名的缓存
-        ContentValues cv = new ContentValues();
-        Cursor cursor = db.rawQuery("select _id from CACHE",null);
-        if(0 == cursor.getCount()){
-            db.execSQL("insert into CACHE values(null,?,?,?,?)",
-                    new String[]{name,password,Integer.toString(flag), Integer.toString(auto)});
-        }
-        else{
-            db.execSQL("update CACHE set userName=? ,password=?,flag=?,auto=? where _id=1",
-                    new String[]{name,password,Integer.toString(flag), Integer.toString(auto)});
-        }
-    }
 
-    public String getCacheName(){  // 获取缓存的用户名
-        String name="";
-        ContentValues cv = new ContentValues();
-        Cursor cursor = db.rawQuery("select userName from CACHE where _id=?",new String[]{Integer.toString(1)});
-
-        while(cursor.moveToNext()){
-            name=cursor.getString(cursor.getColumnIndex("userName"));
-        }
-
-        return name;
-    }
-
-    public String getCachePassword(){
-        String password="";
-        ContentValues cv = new ContentValues();
-        Cursor cursor = db.rawQuery("select password from CACHE where _id=?",new String[]{Integer.toString(1)});
-
-        while(cursor.moveToNext()){
-            password=cursor.getString(cursor.getColumnIndex("password"));
-        }
-
-        return password;
-    }
-
-    public int getCacheFlag(){
-        int flag = 0;
-        ContentValues cv = new ContentValues();
-        Cursor cursor = db.rawQuery("select flag from CACHE where _id=?",new String[]{Integer.toString(1)});
-
-        while(cursor.moveToNext()){
-            flag = cursor.getInt(cursor.getColumnIndex("flag"));
-        }
-        return flag;
-    }
-
-    public int getAuto(){
-        int flag = 0;
-        ContentValues cv = new ContentValues();
-        Cursor cursor = db.rawQuery("select auto from CACHE where _id=?",new String[]{Integer.toString(1)});
-
-        while(cursor.moveToNext()){
-            flag = cursor.getInt(cursor.getColumnIndex("auto"));
-        }
-        return flag;
-    }
-
+    /**
+     * 用户表操作
+     */
     public void addUser(User user){  // 添加用户
         String name = user.getUserName();
         String password = user.getPassword();
@@ -121,9 +68,78 @@ public class DBManager {
         return id;
     }
 
+
+    /**
+     * 登录信息缓存操作
+     */
+    public void addCache(String name, String password, int flag, int auto){  // 添加或更新记住用户名的缓存
+        ContentValues cv = new ContentValues();
+        Cursor cursor = db.rawQuery("select _id from CACHE",null);
+        if(0 == cursor.getCount()){
+            db.execSQL("insert into CACHE values(null,?,?,?,?)",
+                    new String[]{name,password,Integer.toString(flag), Integer.toString(auto)});
+        }
+        else{
+            db.execSQL("update CACHE set userName=? ,password=?,flag=?,auto=? where _id=1",
+                    new String[]{name,password,Integer.toString(flag), Integer.toString(auto)});
+        }
+    }
+
+    public String getCacheName(){  // 获取缓存的用户名
+        String name="";
+        ContentValues cv = new ContentValues();
+        Cursor cursor = db.rawQuery("select userName from CACHE where _id=?",new String[]{Integer.toString(1)});
+
+        while(cursor.moveToNext()){
+            name=cursor.getString(cursor.getColumnIndex("userName"));
+        }
+
+        return name;
+    }
+
+    public String getCachePassword(){  // 获取缓存的密码
+        String password="";
+        ContentValues cv = new ContentValues();
+        Cursor cursor = db.rawQuery("select password from CACHE where _id=?",new String[]{Integer.toString(1)});
+
+        while(cursor.moveToNext()){
+            password=cursor.getString(cursor.getColumnIndex("password"));
+        }
+
+        return password;
+    }
+
+    public int getCacheFlag(){  // 是否记住密码
+        int flag = 0;
+        ContentValues cv = new ContentValues();
+        Cursor cursor = db.rawQuery("select flag from CACHE where _id=?",new String[]{Integer.toString(1)});
+
+        while(cursor.moveToNext()){
+            flag = cursor.getInt(cursor.getColumnIndex("flag"));
+        }
+        return flag;
+    }
+
+    public int getAuto(){  // 是否自动登录
+        int flag = 0;
+        ContentValues cv = new ContentValues();
+        Cursor cursor = db.rawQuery("select auto from CACHE where _id=?",new String[]{Integer.toString(1)});
+
+        while(cursor.moveToNext()){
+            flag = cursor.getInt(cursor.getColumnIndex("auto"));
+        }
+        return flag;
+    }
+
+
+    /**
+     *
+     * 记录表操作
+     */
     public void addwithPic(Item item){  // 增加有图片记录
+        System.out.println(item.getUserId()+" "+item.getDate()+" "+item.getTitle()+" "+item.getContent()+" "+item.getPhotoPath());
         db.execSQL("insert into Record values(null,?,?,?,?,?)",
-                new Object[]{item.getUserId(),item.getDate(),item.getTitle(),item.getContent(),item.getPhotoPath()});
+                new Object[]{item.getUserId(), item.getDate(), item.getTitle(), item.getContent(), item.getPhotoPath()});
     }
 
     public void addwithoutPic(Item item){  // 增加无图片记录
@@ -158,7 +174,7 @@ public class DBManager {
     }
 
     public List<Item> getListOfUser(int userId){  // 获取所有记录
-        list = new ArrayList<Item>();
+        itemList = new ArrayList<Item>();
         ContentValues cv = new ContentValues();
         Cursor cursor = db.rawQuery("select * from Record where userId=?", new String[]{Integer.toString(userId)});
         while(cursor.moveToNext()){
@@ -169,11 +185,66 @@ public class DBManager {
             String content = cursor.getString(cursor.getColumnIndex("content"));
             String path = cursor.getString(cursor.getColumnIndex("imgpath"));
 
+            //System.out.println(title);
             Item item = new Item(_id, userId, time, title, content, path);
 
-            list.add(item);
+            itemList.add(item);
         }
         cursor.close();
-        return list;
+        return itemList;
+    }
+
+    /**
+     * 倒计时记录表操作
+     */
+
+    public void addTimer(Timer timer){
+        db.execSQL("insert into Timer values(null,?,?,?,?,?)",
+                new Object[]{timer.getUserId(), timer.getCreateTime(), timer.getTimerTime(),
+                        timer.getTitle(), timer.getContent(), timer.getPhotoPath()});
+    }
+
+    public void deleteTimer(Timer timer){
+        int id = timer.getId();
+        db.execSQL("delete from Record where _id=?", new Object[]{id});
+    }
+
+    public Timer queryTimer(int id) {  // 获取单条记录
+        Timer timer = new Timer();
+        ContentValues cv = new ContentValues();
+        Cursor cursor = db.rawQuery("select * from Timer where _id=?",new String[]{Integer.toString(id)});
+        while(cursor.moveToNext()){
+            int _id = cursor.getInt(cursor.getColumnIndex("_id"));
+            int userId = cursor.getInt(cursor.getColumnIndex("userId"));
+            String createDate = cursor.getString(cursor.getColumnIndex("createDate"));
+            String timerDate = cursor.getString(cursor.getColumnIndex("timerDate"));
+            String title = cursor.getString(cursor.getColumnIndex("title"));
+            String content = cursor.getString(cursor.getColumnIndex("content"));
+            String path = cursor.getString(cursor.getColumnIndex("imgpath"));
+            timer = new Timer(_id, userId,createDate,timerDate, title, content, path);
+
+        }
+        return timer;
+    }
+
+    public List<Timer> getTimerListOfUser(int userId){  // 获取所有记录
+        timerList = new ArrayList<Timer>();
+        ContentValues cv = new ContentValues();
+        Cursor cursor = db.rawQuery("select * from Timer where userId=?", new String[]{Integer.toString(userId)});
+        while(cursor.moveToNext()){
+            int _id = cursor.getInt(cursor.getColumnIndex("_id"));
+            int _userId = cursor.getInt(cursor.getColumnIndex("userId"));
+            String createDate = cursor.getString(cursor.getColumnIndex("createDate"));
+            String timerDate = cursor.getString(cursor.getColumnIndex("timerDate"));
+            String title = cursor.getString(cursor.getColumnIndex("title"));
+            String content = cursor.getString(cursor.getColumnIndex("content"));
+            String path = cursor.getString(cursor.getColumnIndex("imgpath"));
+
+            Timer timer = new Timer(_id, _userId, createDate,timerDate, title, content, path);
+
+            timerList.add(timer);
+        }
+        cursor.close();
+        return timerList;
     }
 }

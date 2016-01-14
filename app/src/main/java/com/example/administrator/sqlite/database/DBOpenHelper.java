@@ -17,16 +17,20 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     }
     @Override
     public void onCreate(SQLiteDatabase db){
-        //db.execSQL("DROP TABLE Record");
-        db.execSQL("CREATE TABLE IF NOT EXISTS " +
-                "Record (_id INTEGER PRIMARY KEY AUTOINCREMENT,userId INTEGER, " +
-                "date TEXT,title TEXT,content TEXT,imgpath TEXT);");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS " +
-                "USER (_id INTEGER PRIMARY KEY AUTOINCREMENT, userName TEXT, password TEXT);");
+                "USER (_id INTEGER PRIMARY KEY AUTOINCREMENT, userName TEXT, password TEXT);");  // 用户表
 
         db.execSQL("CREATE TABLE IF NOT EXISTS CACHE (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "userName TEXT, password TEXT, flag INTEGER, auto INTEGER);");
+                "userName TEXT, password TEXT, flag INTEGER, auto INTEGER);");  // 登录信息缓存表
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS " +
+                "Record (_id INTEGER PRIMARY KEY AUTOINCREMENT,userId INTEGER, " +
+                "date TEXT,title TEXT,content TEXT,imgpath TEXT);");  // 记录表
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS Timer (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "userId INTEGER, createDate TEXT, timerDate TEXT, " +
+                "title TEXT, content TEXT,imgPath TEXT);");  // 倒计时记录表
     }
 
     @Override

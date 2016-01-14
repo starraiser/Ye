@@ -15,6 +15,7 @@ import com.example.administrator.sqlite.MainActivity;
 import com.example.administrator.sqlite.R;
 import com.example.administrator.sqlite.database.DBManager;
 import com.example.administrator.sqlite.entity.Item;
+import com.example.administrator.sqlite.entity.Timer;
 import com.example.administrator.sqlite.showRecord;
 
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ import java.util.Map;
 
 public class RecordFragment extends ListFragment{
     private SimpleAdapter adapter=null;
-    private List<Item> listData;  // 数据
+    private List<Timer> listData;  // 数据
     private int userId;
     private DBManager database;
 
@@ -43,13 +44,13 @@ public class RecordFragment extends ListFragment{
 
     private List<Map<String ,Object>> getData(){  // 获取数据库记录
         List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
-        listData = database.getListOfUser(userId);
+        listData = database.getTimerListOfUser(userId);
+        System.out.println(listData.size());
         for (int i = 0; i < listData.size(); i++){
             Map<String,Object> map = new HashMap<String,Object>();
 
             String title = listData.get(i).getTitle();
-            String time = listData.get(i).getDate();
-            System.out.println(title);
+            String time = listData.get(i).getCreateTime();
             map.put("title",title);
             map.put("time",time);
             list.add(map);
