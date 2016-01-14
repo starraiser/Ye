@@ -25,7 +25,7 @@ import java.util.Map;
 
 public class RecordFragment extends ListFragment{
     private SimpleAdapter adapter=null;
-    private List<Timer> listData;  // 数据
+    private List<Item> listData;  // 数据
     private int userId;
     private DBManager database;
 
@@ -44,13 +44,13 @@ public class RecordFragment extends ListFragment{
 
     private List<Map<String ,Object>> getData(){  // 获取数据库记录
         List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
-        listData = database.getTimerListOfUser(userId);
+        listData = database.getListOfUser(userId);
         System.out.println(listData.size());
         for (int i = 0; i < listData.size(); i++){
             Map<String,Object> map = new HashMap<String,Object>();
 
             String title = listData.get(i).getTitle();
-            String time = listData.get(i).getCreateTime();
+            String time = listData.get(i).getDate();
             map.put("title",title);
             map.put("time",time);
             list.add(map);

@@ -15,7 +15,9 @@ import com.example.administrator.sqlite.MainActivity;
 import com.example.administrator.sqlite.R;
 import com.example.administrator.sqlite.database.DBManager;
 import com.example.administrator.sqlite.entity.Item;
+import com.example.administrator.sqlite.entity.Timer;
 import com.example.administrator.sqlite.showRecord;
+import com.example.administrator.sqlite.showTimer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,7 +26,7 @@ import java.util.Map;
 
 public class TimerFragment extends ListFragment{
     private SimpleAdapter adapter=null;
-    private List<Item> listData;  // 数据
+    private List<Timer> listData;  // 数据
     private int userId;
     private DBManager database;
 
@@ -43,12 +45,12 @@ public class TimerFragment extends ListFragment{
 
     private List<Map<String ,Object>> getData(){  // 获取数据库记录
         List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
-        listData = database.getListOfUser(userId);
+        listData = database.getTimerListOfUser(userId);
         for (int i = 0; i < listData.size(); i++){
             Map<String,Object> map = new HashMap<String,Object>();
 
             String title = listData.get(i).getTitle();
-            String time = listData.get(i).getDate();
+            String time = listData.get(i).getCreateTime();
             System.out.println(title);
             map.put("title",title);
             map.put("time",time);
@@ -70,13 +72,13 @@ public class TimerFragment extends ListFragment{
         adapter =  new SimpleAdapter(getActivity(),getData(), R.layout.list_layout,
                 new String[]{"title","time"},new int[]{R.id.list_title,R.id.list_time});
         setListAdapter(adapter);
+
     }
 
     @Override
     public void onListItemClick(ListView l,View v,int position,long id){
-        int tmp = database.getListOfUser(userId).get(position).getId();  // 获取点击列表中的数据的id
-
-        Intent intent = new Intent(getActivity(), showRecord.class);
+        int tmp = database.getTimerListOfUser(userId).get(position).getId();  // 获取点击列表中的数据的id
+        Intent intent = new Intent(getActivity(), showTimer.class);
         Bundle bundle = new Bundle();
         bundle.putInt("id", tmp);  // 传递id到显示页面
         intent.putExtras(bundle);

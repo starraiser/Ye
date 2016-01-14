@@ -24,9 +24,11 @@
         </activity>
         <activity android:name=".Edit" />
         <activity android:name=".showRecord" />
+        <activity android:name=".showTimer" />
         <activity android:name=".completePic" />
         <activity android:name=".MainActivity" />
-        <activity android:name=".Register"></activity>
+        <activity android:name=".Register" />
+        <activity android:name=".editTimer"></activity>
     </application>
 
 </manifest>

@@ -137,9 +137,15 @@ public class DBManager {
      * 记录表操作
      */
     public void addwithPic(Item item){  // 增加有图片记录
-        System.out.println(item.getUserId()+" "+item.getDate()+" "+item.getTitle()+" "+item.getContent()+" "+item.getPhotoPath());
         db.execSQL("insert into Record values(null,?,?,?,?,?)",
                 new Object[]{item.getUserId(), item.getDate(), item.getTitle(), item.getContent(), item.getPhotoPath()});
+        /*ContentValues cv = new ContentValues();
+        cv.put("userId",item.getUserId());
+        cv.put("date",item.getDate());
+        cv.put("title",item.getTitle());
+        cv.put("content",item.getContent());
+        cv.put("imgpath",item.getPhotoPath());
+        System.out.println("test"+db.insert("Record",null,cv));*/
     }
 
     public void addwithoutPic(Item item){  // 增加无图片记录
@@ -185,7 +191,6 @@ public class DBManager {
             String content = cursor.getString(cursor.getColumnIndex("content"));
             String path = cursor.getString(cursor.getColumnIndex("imgpath"));
 
-            //System.out.println(title);
             Item item = new Item(_id, userId, time, title, content, path);
 
             itemList.add(item);
@@ -199,14 +204,19 @@ public class DBManager {
      */
 
     public void addTimer(Timer timer){
-        db.execSQL("insert into Timer values(null,?,?,?,?,?)",
+        db.execSQL("insert into Timer values(null,?,?,?,?,?,?)",
                 new Object[]{timer.getUserId(), timer.getCreateTime(), timer.getTimerTime(),
                         timer.getTitle(), timer.getContent(), timer.getPhotoPath()});
     }
 
     public void deleteTimer(Timer timer){
         int id = timer.getId();
-        db.execSQL("delete from Record where _id=?", new Object[]{id});
+        db.execSQL("delete from Timer where _id=?", new Object[]{id});
+    }
+
+    public void updateTimer(Timer timer){  // 更新记录
+        db.execSQL("update Timer set createDate=?,timerDate=?,title=?,content=?,imgpath=? where _id=?",
+                new Object[]{timer.getCreateTime(),timer.getTimerTime(), timer.getTitle(), timer.getContent(), timer.getPhotoPath(), timer.getId()});
     }
 
     public Timer queryTimer(int id) {  // 获取单条记录
@@ -220,7 +230,7 @@ public class DBManager {
             String timerDate = cursor.getString(cursor.getColumnIndex("timerDate"));
             String title = cursor.getString(cursor.getColumnIndex("title"));
             String content = cursor.getString(cursor.getColumnIndex("content"));
-            String path = cursor.getString(cursor.getColumnIndex("imgpath"));
+            String path = cursor.getString(cursor.getColumnIndex("imgPath"));
             timer = new Timer(_id, userId,createDate,timerDate, title, content, path);
 
         }
@@ -238,7 +248,7 @@ public class DBManager {
             String timerDate = cursor.getString(cursor.getColumnIndex("timerDate"));
             String title = cursor.getString(cursor.getColumnIndex("title"));
             String content = cursor.getString(cursor.getColumnIndex("content"));
-            String path = cursor.getString(cursor.getColumnIndex("imgpath"));
+            String path = cursor.getString(cursor.getColumnIndex("imgPath"));
 
             Timer timer = new Timer(_id, _userId, createDate,timerDate, title, content, path);
 

@@ -56,6 +56,7 @@ public class MainActivity extends Activity {
     private ListView recordList;
     private ListView timerList;
     private FragmentManager fragmentManager;
+    private int page=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,12 +107,21 @@ public class MainActivity extends Activity {
         newItem.setOnClickListener(new View.OnClickListener() {  // 新建按钮监听器
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setClass(MainActivity.this, Edit.class);
-                Bundle bundleToEdit = new Bundle();
-                bundleToEdit.putInt("flag", 0);  // 传递flag到编辑页面以判定是从此页面跳转到编辑页面
-                intent.putExtras(bundleToEdit);
-                startActivityForResult(intent, 1);
+                if(0==page) {
+                    Intent intent = new Intent();
+                    intent.setClass(MainActivity.this, Edit.class);
+                    Bundle bundleToEdit = new Bundle();
+                    bundleToEdit.putInt("flag", 0);  // 传递flag到编辑页面以判定是从此页面跳转到编辑页面
+                    intent.putExtras(bundleToEdit);
+                    startActivityForResult(intent, 1);
+                } else{
+                    Intent intent = new Intent();
+                    intent.setClass(MainActivity.this, editTimer.class);
+                    Bundle bundleToEdit = new Bundle();
+                    bundleToEdit.putInt("flag", 0);  // 传递flag到编辑页面以判定是从此页面跳转到编辑页面
+                    intent.putExtras(bundleToEdit);
+                    startActivityForResult(intent, 1);
+                }
             }
         });
 
@@ -208,7 +218,7 @@ public class MainActivity extends Activity {
 
     protected void onResume(){  // 重新设置适配器，刷新数据
         super.onResume();
-        setTabSelection(0);
+        setTabSelection(page);
         /*SimpleAdapter newAdapter = new SimpleAdapter(this,getData(),R.layout.list_layout,
                 new String[]{"title","time"},new int[]{R.id.list_title,R.id.list_time});
         listView.setAdapter(newAdapter);*/
@@ -270,6 +280,7 @@ public class MainActivity extends Activity {
         hideFragments(transaction);
         switch (index){
             case 0:
+                page=0;
                 if(recordFragment == null){
                     recordFragment = new RecordFragment();
                     transaction.add(R.id.content,recordFragment);
@@ -292,6 +303,7 @@ public class MainActivity extends Activity {
                 recordList.setAdapter(adapter);  // 设置适配器*/
                 break;
             case 1:
+                page=1;
                 if(timerFragment == null){
                     timerFragment = new TimerFragment();
                     transaction.add(R.id.content,timerFragment);
