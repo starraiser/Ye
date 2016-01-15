@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -23,6 +24,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 import com.example.administrator.sqlite.ActivityManager.ActivityTaskManager;
 import com.example.administrator.sqlite.Activity.Record.Edit;
@@ -58,6 +60,8 @@ public class MainActivity extends Activity {
     private View timerLayout;
     private ListView recordList;
     private ListView timerList;
+    private TextView recordText;
+    private TextView timerText;
     private FragmentManager fragmentManager;
     private int page=0;
 
@@ -65,7 +69,9 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        init();
+
+        initView();
+        initFragment();
         fragmentManager = getFragmentManager();
         setTabSelection(0);
         ActivityTaskManager.getInstance().putActivity("Main", this);
@@ -76,9 +82,6 @@ public class MainActivity extends Activity {
         SharedPreferences sharedPreferences = getSharedPreferences("info",Activity.MODE_PRIVATE);  // 获取当前用户id
         userId = sharedPreferences.getInt("userId",-1);
 
-        listView = (ListView)findViewById(R.id.list);
-        newItem = (Button)findViewById(R.id.newItem);
-        avatar = (ImageView)findViewById(R.id.mainAvatar);
         //slidingAvatar = (ImageView)findViewById(R.id.slidingAvatar);
 
         BitmapFactory.Options options = new BitmapFactory.Options();  // 添加圆形头像
@@ -110,7 +113,7 @@ public class MainActivity extends Activity {
         newItem.setOnClickListener(new View.OnClickListener() {  // 新建按钮监听器
             @Override
             public void onClick(View v) {
-                if(0==page) {
+                if(0 == page) {
                     Intent intent = new Intent();
                     intent.setClass(MainActivity.this, Edit.class);
                     Bundle bundleToEdit = new Bundle();
@@ -258,7 +261,7 @@ public class MainActivity extends Activity {
         return super.onKeyDown(KeyCode,event);
     }
 
-    private void init(){
+    private void initFragment(){
         recordLayout = findViewById(R.id.record_layout);
         timerLayout = findViewById(R.id.timer_layout);
         //recordList = (ListView)findViewById(R.id.recordList);
@@ -277,13 +280,23 @@ public class MainActivity extends Activity {
         });
     }
 
+    public void initView(){
+        listView = (ListView)findViewById(R.id.list);
+        newItem = (Button)findViewById(R.id.newItem);
+        avatar = (ImageView)findViewById(R.id.mainAvatar);
+        recordText = (TextView)findViewById(R.id.record_text);
+        timerText = (TextView)findViewById(R.id.timer_text);
+    }
+
     private void setTabSelection(int index){
         clearSelection();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         hideFragments(transaction);
         switch (index){
             case 0:
-                page=0;
+                page = 0;
+                recordText.setTextColor(Color.parseColor("#FF0000"));
+                timerText.setTextColor(Color.parseColor("#82858b"));
                 if(recordFragment == null){
                     recordFragment = new RecordFragment();
                     transaction.add(R.id.content,recordFragment);
@@ -307,6 +320,8 @@ public class MainActivity extends Activity {
                 break;
             case 1:
                 page=1;
+                recordText.setTextColor(Color.parseColor("#82858b"));
+                timerText.setTextColor(Color.parseColor("#FF0000"));
                 if(timerFragment == null){
                     timerFragment = new TimerFragment();
                     transaction.add(R.id.content,timerFragment);
