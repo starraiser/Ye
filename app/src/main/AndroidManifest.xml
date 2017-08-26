@@ -11,8 +11,8 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/mumu"
         android:label="@string/app_name"
+        android:icon="@drawable/mumu_low"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.Light.NoTitleBar">
         <activity android:name=".Activity.Login">
